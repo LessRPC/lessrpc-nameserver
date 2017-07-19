@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<conf>
+	<dbinfo>
+		<property>
+			<name>DB_TYPE</name>
+			<value>SQLLITE</value>
+		</property>
+		<property>
+			<name>USER</name>
+			<value></value>
+		</property>		
+		<property>
+			<name>URL</name>
+			<value>jdbc:sqlite:db/test.db</value>
+		</property>
+		<property>
+			<name>LOADER_DB_PORT</name>
+			<value>9999</value>
+		</property>	
+		<property>
+			<name>LOADER_DB_USER</name>
+			<value></value>
+		</property>	
+		<property>
+			<name>LOADER_DB_PASSWORD</name>
+			<value></value>
+		</property>	
+		<property>
+			<name>LOADER_DB_DATABASE_NAME</name>
+			<value></value>
+		</property>
+	</dbinfo>
+	<rpc>
+		<property>
+			<name>PORT</name>
+			<value>6161</value>
+		</property>
+	</rpc>	
+</conf>	
