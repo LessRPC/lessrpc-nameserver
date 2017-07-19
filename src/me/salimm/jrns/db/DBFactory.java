@@ -3,7 +3,6 @@ package me.salimm.jrns.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import com.allConfig.conf.AbstractConfig;
 
@@ -75,20 +74,6 @@ public class DBFactory implements Constants {
 		Connection conn = null;
 		Class.forName(SQLLITE_CONN_DRIVER_CLASSPATH);
 		conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-		String sql1 = "CREATE TABLE IF NOT EXISTS SERVICE (SID integer, NAME text);";
-		// 0:in, 1: out
-		String sql2 = "CREATE TABLE IF NOT EXISTS SERVICE_IO (SID integer, CLSPATH text, TYPE integer);";
-		String sql3 = "CREATE TABLE IF NOT EXISTS SERVICE_PROVIDER (PID integer,SID integer, URL text, PORT integer);";
-
-		Statement stmt = conn.createStatement();
-
-		stmt.executeUpdate(sql1);
-		stmt.executeUpdate(sql2);
-		stmt.executeUpdate(sql3);
-
-		stmt.close();
-
 		return conn;
 	}
 
@@ -129,7 +114,7 @@ public class DBFactory implements Constants {
 		} else if (dbInfo.getType().equals(DBType.ORACLE)) {
 			return DBFactory.createOracleConnection(dbInfo.getDbUrl(), dbInfo.getDbUser(), dbInfo.getDbPass());
 		} else if (dbInfo.getType().equals(DBType.SQLLITE)) {
-			return DBFactory.createOracleConnection(dbInfo.getDbUrl(), dbInfo.getDbUser(), dbInfo.getDbPass());
+			return DBFactory.createSQLLiteConnection(dbInfo.getDbUrl(), dbInfo.getDbUser(), dbInfo.getDbPass());
 		}
 		return null;
 
