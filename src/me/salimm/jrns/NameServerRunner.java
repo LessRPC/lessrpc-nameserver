@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import com.allConfig.conf.XMLConfig;
 
-import me.salimm.jrns.errors.DatabaseNotSupported;
+import me.salimm.jrns.common.errors.DatabaseNotSupported;
 import me.salimm.jrns.server.NameServer;
 
 public class NameServerRunner {

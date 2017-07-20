@@ -6,9 +6,11 @@ import java.sql.SQLException;
 
 import com.allConfig.conf.AbstractConfig;
 
+import me.salimm.jrns.common.db.DBInfo;
+import me.salimm.jrns.common.db.DBUtils;
 import me.salimm.jrns.constants.Constants;
-import me.salimm.jrns.errors.DatabaseNotSupported;
-import me.salimm.jrns.types.DBType;
+import me.salimm.jrns.common.errors.DatabaseNotSupported;
+import me.salimm.jrns.common.types.DBType;
 
 /**
  * 

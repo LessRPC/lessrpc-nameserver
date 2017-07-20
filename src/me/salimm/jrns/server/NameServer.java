@@ -10,12 +10,12 @@ import com.allConfig.conf.AbstractConfig;
 import com.googlecode.jsonrpc4j.JsonRpcServer;
 import com.googlecode.jsonrpc4j.ProxyUtil;
 
+import me.salimm.jrns.common.db.DBUtils;
+import me.salimm.jrns.common.errors.DatabaseNotSupported;
+import me.salimm.jrns.common.services.NSService;
 import me.salimm.jrns.constants.Constants;
 import me.salimm.jrns.db.DBFactory;
-import me.salimm.jrns.db.DBUtils;
-import me.salimm.jrns.errors.DatabaseNotSupported;
 import me.salimm.jrns.rpc.DBBasedNSService;
-import me.salimm.jrns.rpc.NSService;
 
 /**
  * 
@@ -49,7 +49,6 @@ public class NameServer implements Constants {
 
 		stmt.close();
 		System.out.println("Finished checking if schema exists....");
-		
 
 	}
 
