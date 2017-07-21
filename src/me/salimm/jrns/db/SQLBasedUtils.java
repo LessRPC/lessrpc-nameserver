@@ -3,6 +3,7 @@ package me.salimm.jrns.db;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,22 +17,29 @@ public class SQLBasedUtils implements DBUtils, Constants {
 
 	@Override
 	public ServiceProviderInfo getServer(Connection conn, int serviceId) throws SQLException {
-		String sql = "SELECT * from SERVICE_PROVIDER  WHERE SID = " + serviceId + " ORDER BY RAND() LIMIT 1;";
+		String sql = "SELECT * from SERVICE_PROVIDER  WHERE SID = " + serviceId + " ORDER BY RANDOM() LIMIT 1;";
 		ResultSet rs = conn.createStatement().executeQuery(sql);
-		if (!rs.next())
+		if (!rs.next()) {
+			rs.getStatement().close();
 			return null;
+		}
+		ServiceProviderInfo info = new ServiceProviderInfo(rs.getString("URL"), rs.getInt("PORT"), "",
+				StubEnvType.JAVA);
 		rs.getStatement().close();
-		return new ServiceProviderInfo(rs.getString("IP"), rs.getInt("PORT"), rs.getString("NAME"), StubEnvType.JAVA);
+		return info;
 	}
 
 	@Override
 	public ServiceProviderInfo getServer(Connection conn, String serviceName) throws SQLException {
-		String sql = "SELECT * from SERVICE_PROVIDER  WHERE NAME = " + serviceName + " ORDER BY RAND() LIMIT 1;";
+		String sql = "SELECT * from SERVICE_PROVIDER  WHERE NAME = '" + serviceName + "' ORDER BY RANDOM() LIMIT 1;";
 		ResultSet rs = conn.createStatement().executeQuery(sql);
-		if (!rs.next())
+		if (!rs.next()) {
+			rs.getStatement().close();
 			return null;
+		}
+		ServiceProviderInfo info = new ServiceProviderInfo(rs.getString("IP"), rs.getInt("PORT"), "", StubEnvType.JAVA);
 		rs.getStatement().close();
-		return new ServiceProviderInfo(rs.getString("IP"), rs.getInt("PORT"), rs.getString("NAME"), StubEnvType.JAVA);
+		return info;
 	}
 
 	@Override
@@ -53,7 +61,7 @@ public class SQLBasedUtils implements DBUtils, Constants {
 	public ServiceProviderInfo[] getAllServer(Connection conn, String serviceName) throws SQLException {
 		ArrayList<ServiceProviderInfo> list = new ArrayList<ServiceProviderInfo>();
 
-		String sql = "SELECT * from SERVICE_PROVIDER  WHERE NAME = " + serviceName + ";";
+		String sql = "SELECT * from SERVICE_PROVIDER  WHERE NAME = '" + serviceName + "';";
 		ResultSet rs = conn.createStatement().executeQuery(sql);
 		while (rs.next()) {
 			list.add(new ServiceProviderInfo(rs.getString("IP"), rs.getInt("PORT"), rs.getString("NAME"),
@@ -66,7 +74,7 @@ public class SQLBasedUtils implements DBUtils, Constants {
 	@Override
 	public ServiceInfo<?> getServiceInfo(Connection conn, String serviceName)
 			throws SQLException, ClassNotFoundException {
-		String sql = "SELECT * from SERVICE  WHERE NAME = " + serviceName + "";
+		String sql = "SELECT * from SERVICE  WHERE NAME = '" + serviceName + "'";
 		ResultSet rs = conn.createStatement().executeQuery(sql);
 		if (!rs.next())
 			return null;
@@ -116,12 +124,12 @@ public class SQLBasedUtils implements DBUtils, Constants {
 
 	@Override
 	public boolean registerServiceProvider(Connection conn, ServiceInfo<?> service, ServiceProviderInfo provider) {
-		String sql = "INSERT INTO SERVICE_PROVIDER (SID, URL, PORT) VALUES (" + service.getId() + "" + provider.getIp()
-				+ "" + provider.getPort() + ");";
-		ResultSet rs;
+		String sql = "INSERT INTO SERVICE_PROVIDER (SID, URL, PORT) VALUES (" + service.getId() + ",'"
+				+ provider.getIp() + "'," + provider.getPort() + ");";
 		try {
-			rs = conn.createStatement().executeQuery(sql);
-			rs.getStatement().close();
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -131,12 +139,12 @@ public class SQLBasedUtils implements DBUtils, Constants {
 
 	@Override
 	public boolean removeServiceProvider(Connection conn, ServiceInfo<?> service, ServiceProviderInfo provider) {
-		String sql = "DELETE FROM TABLE SERVICE_PROVIDER WHERE URL = " + provider.getIp() + " and PORT="
+		String sql = "DELETE FROM TABLE SERVICE_PROVIDER WHERE URL = '" + provider.getIp() + "' and PORT="
 				+ provider.getPort() + ";";
-		ResultSet rs;
 		try {
-			rs = conn.createStatement().executeQuery(sql);
-			rs.getStatement().close();
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

@@ -18,4 +18,5 @@ public interface Constants {
 	public static final int TYPE_SERVICE_IO_IN = 0;
 	public static final int TYPE_SERVICE_IO_OUT = 1;
 
+	
 }
