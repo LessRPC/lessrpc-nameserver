@@ -38,13 +38,14 @@ public class NameServer implements Constants {
 		Connection conn = DBFactory.getConnection(DBFactory.getDBInfo(conf));
 		String sql1 = "CREATE TABLE IF NOT EXISTS SERVICE (SID integer, NAME text);";
 		// 0:in, 1: out
-		String sql2 = "CREATE TABLE IF NOT EXISTS SERVICE_IO (SID integer, CLSPATH text, TYPE integer);";
+		// String sql2 = "CREATE TABLE IF NOT EXISTS SERVICE_IO (SID integer,
+		// CLSPATH text, TYPE integer);";
 		String sql3 = "CREATE TABLE IF NOT EXISTS SERVICE_PROVIDER (PID integer,SID integer, URL text, PORT integer);";
 
 		Statement stmt = conn.createStatement();
 
 		stmt.executeUpdate(sql1);
-		stmt.executeUpdate(sql2);
+		// stmt.executeUpdate(sql2);
 		stmt.executeUpdate(sql3);
 
 		stmt.close();

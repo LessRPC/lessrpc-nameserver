@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 
 import me.salimm.jrns.common.db.DBUtils;
 import me.salimm.jrns.common.info.ServiceInfo;
@@ -81,20 +80,22 @@ public class SQLBasedUtils implements DBUtils, Constants {
 		String name = rs.getString("NAME");
 		int id = rs.getInt("SID");
 		rs.getStatement().close();
-		Class<?> output = null;
-		List<Class<?>> inputs = new ArrayList<Class<?>>();
-		sql = "SELECT * from SERVICE_IO  WHERE SID = " + id + "";
-		rs = conn.createStatement().executeQuery(sql);
-		while (rs.next()) {
-			if (rs.getInt("TYPE") == TYPE_SERVICE_IO_IN) {
-				inputs.add(Class.forName(rs.getString("CLSPATH")));
-			} else {
-				output = Class.forName(rs.getString("CLSPATH"));
-			}
-		}
-		rs.getStatement().close();
+		// Class<?> output = null;
+		// List<Class<?>> inputs = new ArrayList<Class<?>>();
+		// sql = "SELECT * from SERVICE_IO WHERE SID = " + id + "";
+		// rs = conn.createStatement().executeQuery(sql);
+		// while (rs.next()) {
+		// if (rs.getInt("TYPE") == TYPE_SERVICE_IO_IN) {
+		// inputs.add(Class.forName(rs.getString("CLSPATH")));
+		// } else {
+		// output = Class.forName(rs.getString("CLSPATH"));
+		// }
+		// }
+		// rs.getStatement().close();
 
-		return new ServiceInfo<>(name, id, inputs.toArray(new Class<?>[] {}), output);
+		// return new ServiceInfo<>(name, id, inputs.toArray(new Class<?>[] {}),
+		// output);
+		return new ServiceInfo<>(name, id);
 	}
 
 	@Override
@@ -106,20 +107,22 @@ public class SQLBasedUtils implements DBUtils, Constants {
 		String name = rs.getString("NAME");
 		int id = rs.getInt("SID");
 		rs.getStatement().close();
-		Class<?> output = null;
-		List<Class<?>> inputs = new ArrayList<Class<?>>();
-		sql = "SELECT * from SERVICE_IO  WHERE SID = " + id + "";
-		rs = conn.createStatement().executeQuery(sql);
-		while (rs.next()) {
-			if (rs.getInt("TYPE") == TYPE_SERVICE_IO_IN) {
-				inputs.add(Class.forName(rs.getString("CLSPATH")));
-			} else {
-				output = Class.forName(rs.getString("CLSPATH"));
-			}
-		}
-		rs.getStatement().close();
+		// Class<?> output = null;
+		// List<Class<?>> inputs = new ArrayList<Class<?>>();
+		// sql = "SELECT * from SERVICE_IO WHERE SID = " + id + "";
+		// rs = conn.createStatement().executeQuery(sql);
+		// while (rs.next()) {
+		// if (rs.getInt("TYPE") == TYPE_SERVICE_IO_IN) {
+		// inputs.add(Class.forName(rs.getString("CLSPATH")));
+		// } else {
+		// output = Class.forName(rs.getString("CLSPATH"));
+		// }
+		// }
+		// rs.getStatement().close();
 
-		return new ServiceInfo<>(name, id, inputs.toArray(new Class<?>[] {}), output);
+		// return new ServiceInfo<>(name, id, inputs.toArray(new Class<?>[] {}),
+		// output);
+		return new ServiceInfo<>(name, id);
 	}
 
 	@Override
@@ -150,6 +153,20 @@ public class SQLBasedUtils implements DBUtils, Constants {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public ServiceProviderInfo[] getAllServer(Connection conn) throws SQLException {
+		ArrayList<ServiceProviderInfo> list = new ArrayList<ServiceProviderInfo>();
+
+		String sql = "SELECT * from SERVICE_PROVIDER;";
+		ResultSet rs = conn.createStatement().executeQuery(sql);
+		while (rs.next()) {
+			list.add(new ServiceProviderInfo(rs.getString("IP"), rs.getInt("PORT"), rs.getString("NAME"),
+					StubEnvType.JAVA));
+		}
+		rs.getStatement().close();
+		return list.toArray(new ServiceProviderInfo[] {});
 	}
 
 }

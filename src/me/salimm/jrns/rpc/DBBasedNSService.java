@@ -32,7 +32,7 @@ public class DBBasedNSService implements NSService {
 	}
 
 	@Override
-	public ServiceProviderInfo getServer(int serviceId)
+	public ServiceProviderInfo getServerById(int serviceId)
 			throws ClassNotFoundException, SQLException, DatabaseNotSupported {
 		Connection conn = DBFactory.getConnection(dbInfo);
 		ServiceProviderInfo spi = dbUtils.getServer(conn, serviceId);
@@ -41,7 +41,7 @@ public class DBBasedNSService implements NSService {
 	}
 
 	@Override
-	public ServiceProviderInfo getServer(String serviceName)
+	public ServiceProviderInfo getServerByName(String serviceName)
 			throws ClassNotFoundException, SQLException, DatabaseNotSupported {
 		Connection conn = DBFactory.getConnection(dbInfo);
 		ServiceProviderInfo spi = dbUtils.getServer(conn, serviceName);
@@ -50,7 +50,7 @@ public class DBBasedNSService implements NSService {
 	}
 
 	@Override
-	public ServiceProviderInfo[] getAllServer(int serviceId)
+	public ServiceProviderInfo[] getAllServersById(int serviceId)
 			throws ClassNotFoundException, SQLException, DatabaseNotSupported {
 		Connection conn = DBFactory.getConnection(dbInfo);
 		ServiceProviderInfo[] spis = dbUtils.getAllServer(DBFactory.getConnection(dbInfo), serviceId);
@@ -59,7 +59,7 @@ public class DBBasedNSService implements NSService {
 	}
 
 	@Override
-	public ServiceProviderInfo[] getAllServer(String serviceName)
+	public ServiceProviderInfo[] getAllServersByName(String serviceName)
 			throws ClassNotFoundException, SQLException, DatabaseNotSupported {
 		Connection conn = DBFactory.getConnection(dbInfo);
 		ServiceProviderInfo[] spis = dbUtils.getAllServer(DBFactory.getConnection(dbInfo), serviceName);
@@ -68,26 +68,29 @@ public class DBBasedNSService implements NSService {
 	}
 
 	@Override
-	public ServiceInfo<?> getServiceInfo(String serviceName)
+	public ServiceInfo<?> getServiceInfoByName(String serviceName)
 			throws ClassNotFoundException, SQLException, DatabaseNotSupported {
 		Connection conn = DBFactory.getConnection(dbInfo);
 		ServiceInfo<?> si = dbUtils.getServiceInfo(DBFactory.getConnection(dbInfo), serviceName);
 		conn.close();
+		System.out.println(si);
 		return si;
 	}
 
 	@Override
-	public ServiceInfo<?> getServiceInfo(int serviceId)
+	public ServiceInfo<?> getServiceInfoById(int serviceId)
 			throws ClassNotFoundException, SQLException, DatabaseNotSupported {
 		Connection conn = DBFactory.getConnection(dbInfo);
 		ServiceInfo<?> si = dbUtils.getServiceInfo(DBFactory.getConnection(dbInfo), serviceId);
 		conn.close();
+		System.out.println(si);
 		return si;
 	}
 
 	@Override
 	public boolean registerServiceProvider(ServiceInfo<?> service, ServiceProviderInfo provider)
 			throws ClassNotFoundException, SQLException, DatabaseNotSupported {
+		System.out.println(service);
 		Connection conn = DBFactory.getConnection(dbInfo);
 		boolean flag = dbUtils.registerServiceProvider(DBFactory.getConnection(dbInfo), service, provider);
 		conn.close();
@@ -101,6 +104,14 @@ public class DBBasedNSService implements NSService {
 		boolean flag = dbUtils.removeServiceProvider(DBFactory.getConnection(dbInfo), service, provider);
 		conn.close();
 		return flag;
+	}
+
+	@Override
+	public ServiceProviderInfo[] getAllServer() throws ClassNotFoundException, SQLException, DatabaseNotSupported {
+		Connection conn = DBFactory.getConnection(dbInfo);
+		ServiceProviderInfo[] spis = dbUtils.getAllServer(DBFactory.getConnection(dbInfo));
+		conn.close();
+		return spis;
 	}
 
 }
