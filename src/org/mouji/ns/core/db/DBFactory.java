@@ -4,13 +4,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import com.allConfig.conf.AbstractConfig;
 
 import org.mouji.common.db.DBInfo;
 import org.mouji.common.db.DBUtils;
 import org.mouji.common.errors.DatabaseNotSupported;
 import org.mouji.common.types.DBType;
 import org.mouji.ns.core.constants.Constants;
+
+import me.salimm.allConfig.Config;
+import me.salimm.allConfig.errors.PrefixNotANestedConfigException;
 
 /**
  * 
@@ -86,9 +88,10 @@ public class DBFactory implements Constants {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 * @throws DatabaseNotSupported
+	 * @throws PrefixNotANestedConfigException 
 	 */
-	public static DBUtils getDBUtils(AbstractConfig conf)
-			throws ClassNotFoundException, SQLException, DatabaseNotSupported {
+	public static DBUtils getDBUtils(Config conf)
+			throws ClassNotFoundException, SQLException, DatabaseNotSupported, PrefixNotANestedConfigException {
 		if (conf.getValue(CONF_TAG_NAME_DB_TYPE).equals(DBType.MYSQL.name())) {
 			return new MySQLUtils();
 			// } else if
@@ -125,7 +128,7 @@ public class DBFactory implements Constants {
 
 	}
 
-	public static DBInfo getDBInfo(AbstractConfig conf) {
+	public static DBInfo getDBInfo(Config conf) throws PrefixNotANestedConfigException {
 		return new DBInfo(conf.getValue(CONF_TAG_NAME_DB_URL), conf.getValue(CONF_TAG_NAME_DB_DBNAME),
 				conf.getValue(CONF_TAG_NAME_DB_USER), conf.getValue(CONF_TAG_NAME_DB_PASS),
 				DBType.fromString(conf.getValue(CONF_TAG_NAME_DB_TYPE)));

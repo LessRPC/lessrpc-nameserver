@@ -2,7 +2,6 @@ package org.mouji.ns.core.server;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import org.mouji.common.db.DBInfo;
@@ -16,7 +15,9 @@ import org.mouji.ns.core.rpc.DBBasedNameServer;
 import org.mouji.ns.core.rpc.NameServerServiceProvider;
 import org.mouji.stub.java.stubs.ServerStub;
 
-import com.allConfig.conf.AbstractConfig;
+import me.salimm.allConfig.Config;
+import me.salimm.allConfig.errors.PrefixNotANestedConfigException;
+
 
 /**
  * 
@@ -27,11 +28,11 @@ import com.allConfig.conf.AbstractConfig;
  */
 public class NameServer implements Constants {
 
-	private AbstractConfig conf;
+	private Config conf;
 
 	private DBUtils dbUtils;
 
-	public NameServer(AbstractConfig conf) throws ClassNotFoundException, SQLException, DatabaseNotSupported {
+	public NameServer(Config conf) throws ClassNotFoundException, SQLException, DatabaseNotSupported, PrefixNotANestedConfigException {
 		this.conf = conf;
 		this.dbUtils = DBFactory.getDBUtils(conf);
 

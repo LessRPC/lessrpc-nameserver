@@ -5,7 +5,6 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.allConfig.conf.AbstractConfig;
 
 import org.mouji.common.db.DBInfo;
 import org.mouji.common.db.DBUtils;
@@ -16,6 +15,9 @@ import org.mouji.common.info.ServiceSupportInfo;
 import org.mouji.common.loadbalance.ProviderLoadBalancer;
 import org.mouji.common.services.NameServer;
 import org.mouji.ns.core.db.DBFactory;
+
+import me.salimm.allConfig.Config;
+import me.salimm.allConfig.errors.PrefixNotANestedConfigException;
 
 /**
  * 
@@ -42,8 +44,8 @@ public class DBBasedNameServer implements NameServer {
 	 */
 	private ProviderLoadBalancer balancer;
 
-	public DBBasedNameServer(AbstractConfig conf, DBUtils dbUtils, String url, int port,
-			ProviderLoadBalancer balancer) {
+	public DBBasedNameServer(Config conf, DBUtils dbUtils, String url, int port,
+			ProviderLoadBalancer balancer) throws PrefixNotANestedConfigException {
 		this.dbUtils = dbUtils;
 		this.url = url;
 		this.port = port;
@@ -51,8 +53,8 @@ public class DBBasedNameServer implements NameServer {
 		this.dbInfo = DBFactory.getDBInfo(conf);
 	}
 
-	public DBBasedNameServer(AbstractConfig conf, DBUtils dbUtils, int port, ProviderLoadBalancer balancer)
-			throws UnknownHostException {
+	public DBBasedNameServer(Config conf, DBUtils dbUtils, int port, ProviderLoadBalancer balancer)
+			throws UnknownHostException, PrefixNotANestedConfigException {
 		this(conf, dbUtils, Inet4Address.getLocalHost().getHostAddress(), port, balancer);
 	}
 

@@ -5,7 +5,8 @@ import java.sql.SQLException;
 import org.mouji.common.errors.DatabaseNotSupported;
 import org.mouji.ns.core.server.NameServer;
 
-import com.allConfig.conf.XMLConfig;
+import me.salimm.allConfig.types.XMLConfig;
+
 
 
 public class NameServerRunner {
