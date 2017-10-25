@@ -47,8 +47,6 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 					+ " = " + service.getId() + " and sp." + DB_SQL_TABLE_COLUMN_NAME_URL + " = '" + provider.getURL()
 					+ "' and sp." + DB_SQL_TABLE_COLUMN_NAME_PORT + "=" + provider.getPort() + " ;";
 
-			System.out.println(sql2);
-
 			ResultSet rs2 = conn.createStatement().executeQuery(sql2);
 			List<SerializationFormat> tmp = new ArrayList<SerializationFormat>();
 			while (rs2.next()) {
@@ -68,13 +66,14 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 		ArrayList<ServiceProviderInfo> list = new ArrayList<ServiceProviderInfo>();
 		ArrayList<ServiceInfo<?>> services = new ArrayList<ServiceInfo<?>>();
 
-		String sql = "SELECT s.URL, s.PORT from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + "as sp, "
-				+ DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " as s  WHERE s." + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID
+		String sql = "SELECT sp.URL, sp.PORT, s.NAME as SERVICE_NAME, s.SERVICE_ID from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " as sp, "
+				+ DB_SQL_TABLE_NAME_SERVICE + " as s  WHERE s." + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID
 				+ " = sp." + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID + ";";
 		ResultSet rs = conn.createStatement().executeQuery(sql);
 		while (rs.next()) {
 			list.add(new ServiceProviderInfo(rs.getString(DB_SQL_TABLE_COLUMN_NAME_URL),
 					rs.getInt(DB_SQL_TABLE_COLUMN_NAME_PORT), StubEnvInfo.currentEnvInfo()));
+			services.add(new ServiceInfo<>(rs.getString("SERVICE_NAME"), rs.getInt("SERVICE_ID")));
 		}
 		rs.getStatement().close();
 
@@ -86,19 +85,20 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 			sup.setProvider(provider);
 			sup.setService(services.get(i));
 
-			String sql2 = "SELECT * from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " as sp, "
+			String sql2 = "SELECT "+DB_SQL_TABLE_COLUMN_NAME_FORMAT_NAME+", "+DB_SQL_TABLE_COLUMN_NAME_FORMAT_VERSION+" from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " as sp, "
 					+ DB_SQL_TABLE_NAME_SERVICE_PROVIDER_SUPPORT + " as sps  WHERE sp."
 					+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + " = sps."
 					+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + " and " + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID
-					+ " = " + services.get(i).getId() + " and sp." + DB_SQL_TABLE_COLUMN_NAME_URL + " = '"
-					+ provider.getURL() + "' and sp." + DB_SQL_TABLE_COLUMN_NAME_PORT + "=" + provider.getPort() + " ;";
+					+ " = " + services.get(i).getId() + " and sp." + DB_SQL_TABLE_COLUMN_NAME_URL + " = '" + provider.getURL()
+					+ "' and sp." + DB_SQL_TABLE_COLUMN_NAME_PORT + "=" + provider.getPort() + " ;";
 
 			ResultSet rs2 = conn.createStatement().executeQuery(sql2);
 			List<SerializationFormat> tmp = new ArrayList<SerializationFormat>();
 			while (rs2.next()) {
-				tmp.add(new SerializationFormat());
+				tmp.add(new SerializationFormat(rs2.getString(1),rs2.getString(2)));
 			}
 
+			sup.setSerializers(tmp.toArray(new SerializationFormat[0]));
 			out[i] = sup;
 		}
 
@@ -159,7 +159,6 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 			}
 
 			for (SerializationFormat format : support.getSerializers()) {
-				System.out.println(format);
 				String sql2 = "INSERT INTO " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER_SUPPORT + " ("
 						+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + ", " + DB_SQL_TABLE_COLUMN_NAME_FORMAT_NAME
 						+ ", " + DB_SQL_TABLE_COLUMN_NAME_FORMAT_VERSION + ") VALUES (" + pid + ",'" + format.getName()
@@ -185,9 +184,9 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 	public boolean unregister(Connection conn, ServiceInfo<?> service, ServiceProviderInfo provider) {
 
 		try {
-			String sql = "DELETE FROM TABLE " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " WHERE "
+			String sql = "DELETE FROM  " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " WHERE "
 					+ DB_SQL_TABLE_COLUMN_NAME_URL + " = '" + provider.getURL() + "' and "
-					+ DB_SQL_TABLE_COLUMN_NAME_PORT + "=" + provider.getPort() + ";";
+					+ DB_SQL_TABLE_COLUMN_NAME_PORT + "=" + provider.getPort() + " and SERVICE_ID="+service.getId()+" ;";
 
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate(sql);

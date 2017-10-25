@@ -22,28 +22,26 @@ public class TestMain {
 
 	public static void main(String[] args) throws ResponseContentTypeCannotBePrasedException,
 			SerializationFormatNotSupported, RPCException, RPCProviderFailureException, IOException, Exception {
-		// NameServerInfo nsInfo;
-		// ServiceProviderInfo sampleProvider = new ServiceProviderInfo("test",
-		// 5, StubEnvInfo.currentEnvInfo());
-		//
-		//
-		//
-		// ServiceProviderInfo nsSPInfo = new
-		// ServiceProviderInfo(Inet4Address.getLocalHost().getHostAddress(),
-		// 6161,
-		// StubEnvInfo.currentEnvInfo());
-		// nsInfo = new NameServerInfo(nsSPInfo.getURL(), nsSPInfo.getPort());
-		//
-		// ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
-		//
-		// NSClient client = new NSClient(nsInfo, new ArrayList<>());
-		//
-		// ServiceSupportInfo provider = client.getProvider(service);
-		//
-		// System.out.println(provider);
+		 NameServerInfo nsInfo;
+		 ServiceProviderInfo sampleProvider = new ServiceProviderInfo("test",
+		 5, StubEnvInfo.currentEnvInfo());
 		
-		System.out.println();
-		System.out.println(ServiceSupportInfo[].class);
+		
+		
+		 ServiceProviderInfo nsSPInfo = new
+		 ServiceProviderInfo(Inet4Address.getLocalHost().getHostAddress(),
+		 6161,
+		 StubEnvInfo.currentEnvInfo());
+		 nsInfo = new NameServerInfo(nsSPInfo.getURL(), nsSPInfo.getPort());
+		
+		 ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
+		
+		 NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		
+		 ServiceSupportInfo provider = client.getProvider(service);
+		
+		 System.out.println(provider);
+		
 
 	}
 }

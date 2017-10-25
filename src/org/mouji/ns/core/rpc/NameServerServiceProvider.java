@@ -17,7 +17,7 @@ import org.mouji.common.info.StubEnvInfo;
 import org.mouji.common.info.responses.ServiceResponse;
 import org.mouji.common.services.NameServer;
 import org.mouji.common.services.NameServerServices;
-import org.mouji.common.services.ServiceProvider;import org.mouji.stub.java.stubs.NSServerStub;
+import org.mouji.common.services.ServiceProvider;
 
 public class NameServerServiceProvider implements ServiceProvider {
 
@@ -89,7 +89,7 @@ public class NameServerServiceProvider implements ServiceProvider {
 
 		for (int i = 0; i < request.getArgs().length; i++) {
 			// checking if the provided object is is instance of required type
-			if (!(types[i].isAssignableFrom(request.getArgs()[0].getContent().getClass()))) {
+			if (!(types[i].isAssignableFrom(request.getArgs()[i].getContent().getClass()))) {
 				throw new InvalidArgsException("Argument number " + i + " expected to have type "
 						+ types[i].getCanonicalName() + " but an object of type "
 						+ request.getArgs()[i].getClass().getCanonicalName() + " was provided");
@@ -102,6 +102,7 @@ public class NameServerServiceProvider implements ServiceProvider {
 
 	private ServiceResponse<?> handleUnregister(ServiceRequest request)
 			throws ClassNotFoundException, SQLException, DatabaseNotSupported, InvalidArgsException {
+		System.out.println(request);
 		checkArgs(2, request, new Class[] { ServiceInfo.class, ServiceProviderInfo.class });
 		boolean flag = nameServer.unregister((ServiceInfo<?>) request.getArgs()[0].getContent(),
 				(ServiceProviderInfo) request.getArgs()[1].getContent());
