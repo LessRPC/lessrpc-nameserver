@@ -72,11 +72,42 @@ public class NameServerTest implements NameServerServices {
 
 	@Test
 	public void testRegister() throws Exception {
+		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
 		NSClient client = new NSClient(nsInfo, new ArrayList<>());
-		boolean flag = client.register(new ServiceSupportInfo(REGISTER, sampleProvider,
+		boolean flag = client.register(new ServiceSupportInfo(service, sampleProvider,
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 
 		Assert.assertEquals(true, flag);
+	}
+	
+	@Test
+	public void testGetServiceInfoById() throws Exception {
+		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
+		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		boolean flag = client.register(new ServiceSupportInfo(service, sampleProvider,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+
+		Assert.assertEquals(true, flag);
+		
+		ServiceInfo<?> response = client.getServiceInfoById(1);
+		
+		Assert.assertEquals(service, response);	
+		
+	}
+	
+	@Test
+	public void testGetServiceInfoByName() throws Exception {
+		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
+		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		boolean flag = client.register(new ServiceSupportInfo(service, sampleProvider,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+
+		Assert.assertEquals(true, flag);
+		
+		ServiceInfo<?> response = client.getServiceInfoByName("test");
+		
+		Assert.assertEquals(service, response);	
+		
 	}
 
 	@Test
