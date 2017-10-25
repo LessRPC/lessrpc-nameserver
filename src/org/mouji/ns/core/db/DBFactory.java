@@ -4,15 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-
 import org.mouji.common.db.DBInfo;
 import org.mouji.common.db.DBUtils;
 import org.mouji.common.errors.DatabaseNotSupported;
 import org.mouji.common.types.DBType;
 import org.mouji.ns.core.constants.Constants;
 
-import me.salimm.allConfig.Config;
-import me.salimm.allConfig.errors.PrefixNotANestedConfigException;
+import me.salimm.allconfig.core.Config;
+import me.salimm.allconfig.core.errors.PrefixNotANestedConfigException;
 
 /**
  * 
@@ -88,7 +87,7 @@ public class DBFactory implements Constants {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 * @throws DatabaseNotSupported
-	 * @throws PrefixNotANestedConfigException 
+	 * @throws PrefixNotANestedConfigException
 	 */
 	public static DBUtils getDBUtils(Config conf)
 			throws ClassNotFoundException, SQLException, DatabaseNotSupported, PrefixNotANestedConfigException {

@@ -5,8 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.plaf.synth.SynthSpinnerUI;
 
 import org.mouji.common.db.DBUtils;
+import org.mouji.common.info.SerializationFormat;
 import org.mouji.common.info.ServiceInfo;
 import org.mouji.common.info.ServiceProviderInfo;
 import org.mouji.common.info.ServiceSupportInfo;
@@ -19,7 +23,7 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 	public ServiceSupportInfo[] getProviders(Connection conn, ServiceInfo<?> service) throws SQLException {
 		ArrayList<ServiceProviderInfo> list = new ArrayList<ServiceProviderInfo>();
 
-		String sql = "SELECT * from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + "  WHERE "
+		String sql = "SELECT URL, PORT from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + "  WHERE "
 				+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID + " = " + service.getId() + ";";
 		ResultSet rs = conn.createStatement().executeQuery(sql);
 		while (rs.next()) {
@@ -27,22 +31,78 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 					rs.getInt(DB_SQL_TABLE_COLUMN_NAME_PORT), StubEnvInfo.currentEnvInfo()));
 		}
 		rs.getStatement().close();
-		return list.toArray(new ServiceSupportInfo[] {});
+
+		ServiceSupportInfo[] out = new ServiceSupportInfo[list.size()];
+
+		for (int i = 0; i < list.size(); i++) {
+			ServiceProviderInfo provider = list.get(i);
+			ServiceSupportInfo sup = new ServiceSupportInfo();
+			sup.setProvider(provider);
+			sup.setService(service);
+
+			String sql2 = "SELECT "+DB_SQL_TABLE_COLUMN_NAME_FORMAT_NAME+", "+DB_SQL_TABLE_COLUMN_NAME_FORMAT_VERSION+" from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " as sp, "
+					+ DB_SQL_TABLE_NAME_SERVICE_PROVIDER_SUPPORT + " as sps  WHERE sp."
+					+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + " = sps."
+					+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + " and " + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID
+					+ " = " + service.getId() + " and sp." + DB_SQL_TABLE_COLUMN_NAME_URL + " = '" + provider.getURL()
+					+ "' and sp." + DB_SQL_TABLE_COLUMN_NAME_PORT + "=" + provider.getPort() + " ;";
+
+			System.out.println(sql2);
+
+			ResultSet rs2 = conn.createStatement().executeQuery(sql2);
+			List<SerializationFormat> tmp = new ArrayList<SerializationFormat>();
+			while (rs2.next()) {
+				tmp.add(new SerializationFormat(rs2.getString(1),rs2.getString(2)));
+			}
+
+			sup.setSerializers(tmp.toArray(new SerializationFormat[0]));
+			out[i] = sup;
+		}
+
+		return out;
 
 	}
 
 	@Override
 	public ServiceSupportInfo[] getAllProviders(Connection conn) throws SQLException {
 		ArrayList<ServiceProviderInfo> list = new ArrayList<ServiceProviderInfo>();
+		ArrayList<ServiceInfo<?>> services = new ArrayList<ServiceInfo<?>>();
 
-		String sql = "SELECT * from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + ";";
+		String sql = "SELECT s.URL, s.PORT from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + "as sp, "
+				+ DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " as s  WHERE s." + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID
+				+ " = sp." + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID + ";";
 		ResultSet rs = conn.createStatement().executeQuery(sql);
 		while (rs.next()) {
 			list.add(new ServiceProviderInfo(rs.getString(DB_SQL_TABLE_COLUMN_NAME_URL),
 					rs.getInt(DB_SQL_TABLE_COLUMN_NAME_PORT), StubEnvInfo.currentEnvInfo()));
 		}
 		rs.getStatement().close();
-		return list.toArray(new ServiceSupportInfo[] {});
+
+		ServiceSupportInfo[] out = new ServiceSupportInfo[list.size()];
+
+		for (int i = 0; i < list.size(); i++) {
+			ServiceProviderInfo provider = list.get(i);
+			ServiceSupportInfo sup = new ServiceSupportInfo();
+			sup.setProvider(provider);
+			sup.setService(services.get(i));
+
+			String sql2 = "SELECT * from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " as sp, "
+					+ DB_SQL_TABLE_NAME_SERVICE_PROVIDER_SUPPORT + " as sps  WHERE sp."
+					+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + " = sps."
+					+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + " and " + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID
+					+ " = " + services.get(i).getId() + " and sp." + DB_SQL_TABLE_COLUMN_NAME_URL + " = '"
+					+ provider.getURL() + "' and sp." + DB_SQL_TABLE_COLUMN_NAME_PORT + "=" + provider.getPort() + " ;";
+
+			ResultSet rs2 = conn.createStatement().executeQuery(sql2);
+			List<SerializationFormat> tmp = new ArrayList<SerializationFormat>();
+			while (rs2.next()) {
+				tmp.add(new SerializationFormat());
+			}
+
+			out[i] = sup;
+		}
+
+		return out;
 	}
 
 	@Override
@@ -77,12 +137,42 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 		ServiceInfo<?> service = support.getService();
 		ServiceProviderInfo provider = support.getProvider();
 
+		String sqlService = "INSERT OR IGNORE INTO " + DB_SQL_TABLE_NAME_SERVICE + " ("
+				+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID + ", " + DB_SQL_TABLE_COLUMN_NAME_NAME + " ) VALUES ("
+				+ service.getId() + ",'" + service.getName() + "' );";
+
 		String sql = "INSERT INTO " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " (" + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID
-				+ ", " + DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + ", " + DB_SQL_TABLE_COLUMN_NAME_PORT
-				+ ") VALUES (" + service.getId() + ",'" + provider.getURL() + "'," + provider.getPort() + ");";
+				+ ", " + DB_SQL_TABLE_COLUMN_NAME_URL + ", " + DB_SQL_TABLE_COLUMN_NAME_PORT + ") VALUES ("
+				+ service.getId() + ",'" + provider.getURL() + "'," + provider.getPort() + ");";
+
 		try {
 			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sqlService);
 			stmt.executeUpdate(sql);
+
+			int pid = -1;
+			ResultSet generatedKeys = stmt.executeQuery("SELECT last_insert_rowid()");
+			if (generatedKeys.next()) {
+				pid = generatedKeys.getInt(1);
+			} else {
+				throw new SQLException("Creating user failed, no ID obtained.");
+			}
+
+			for (SerializationFormat format : support.getSerializers()) {
+				System.out.println(format);
+				String sql2 = "INSERT INTO " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER_SUPPORT + " ("
+						+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + ", " + DB_SQL_TABLE_COLUMN_NAME_FORMAT_NAME
+						+ ", " + DB_SQL_TABLE_COLUMN_NAME_FORMAT_VERSION + ") VALUES (" + pid + ",'" + format.getName()
+						+ "','" + format.getVersion() + "');";
+				try {
+					stmt.executeUpdate(sql2);
+
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return false;
+				}
+
+			}
 			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();

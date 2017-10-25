@@ -64,4 +64,24 @@ public class MySQLUtils extends SQLBasedUtils {
 
 		return true;
 	}
+	
+	@Override
+	public boolean cleanAllTables(Connection conn) {
+
+		try {
+
+			String sql = "truncate table " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " ; truncate table "
+					+ DB_SQL_TABLE_NAME_SERVICE + " ; truncate table " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER_SUPPORT
+					+ " ;";
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+
+	}
 }

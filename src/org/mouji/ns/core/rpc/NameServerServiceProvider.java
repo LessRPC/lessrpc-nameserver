@@ -17,7 +17,7 @@ import org.mouji.common.info.StubEnvInfo;
 import org.mouji.common.info.responses.ServiceResponse;
 import org.mouji.common.services.NameServer;
 import org.mouji.common.services.NameServerServices;
-import org.mouji.common.services.ServiceProvider;
+import org.mouji.common.services.ServiceProvider;import org.mouji.stub.java.stubs.NSServerStub;
 
 public class NameServerServiceProvider implements ServiceProvider {
 

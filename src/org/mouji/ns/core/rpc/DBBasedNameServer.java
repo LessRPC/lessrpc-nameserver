@@ -5,7 +5,6 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-
 import org.mouji.common.db.DBInfo;
 import org.mouji.common.db.DBUtils;
 import org.mouji.common.errors.DatabaseNotSupported;
@@ -16,8 +15,8 @@ import org.mouji.common.loadbalance.ProviderLoadBalancer;
 import org.mouji.common.services.NameServer;
 import org.mouji.ns.core.db.DBFactory;
 
-import me.salimm.allConfig.Config;
-import me.salimm.allConfig.errors.PrefixNotANestedConfigException;
+import me.salimm.allconfig.core.Config;
+import me.salimm.allconfig.core.errors.PrefixNotANestedConfigException;
 
 /**
  * 
@@ -44,18 +43,46 @@ public class DBBasedNameServer implements NameServer {
 	 */
 	private ProviderLoadBalancer balancer;
 
-	public DBBasedNameServer(Config conf, DBUtils dbUtils, String url, int port,
-			ProviderLoadBalancer balancer) throws PrefixNotANestedConfigException {
+	public DBBasedNameServer(Config conf, DBUtils dbUtils, String url, int port, ProviderLoadBalancer balancer)
+			throws PrefixNotANestedConfigException, ClassNotFoundException, SQLException, DatabaseNotSupported {
 		this.dbUtils = dbUtils;
 		this.url = url;
 		this.port = port;
 		this.setLoadBalancer(balancer);
 		this.dbInfo = DBFactory.getDBInfo(conf);
+		initDatabase(dbInfo);
 	}
 
 	public DBBasedNameServer(Config conf, DBUtils dbUtils, int port, ProviderLoadBalancer balancer)
-			throws UnknownHostException, PrefixNotANestedConfigException {
+			throws UnknownHostException, PrefixNotANestedConfigException, ClassNotFoundException, SQLException,
+			DatabaseNotSupported {
 		this(conf, dbUtils, Inet4Address.getLocalHost().getHostAddress(), port, balancer);
+	}
+
+	public DBBasedNameServer(Config conf, String url, int port, ProviderLoadBalancer balancer)
+			throws UnknownHostException, PrefixNotANestedConfigException, ClassNotFoundException, SQLException,
+			DatabaseNotSupported {
+		this(conf, DBFactory.getDBUtils(conf), Inet4Address.getLocalHost().getHostAddress(), port, balancer);
+	}
+
+	public DBBasedNameServer(Config conf, int port, ProviderLoadBalancer balancer) throws UnknownHostException,
+			PrefixNotANestedConfigException, ClassNotFoundException, SQLException, DatabaseNotSupported {
+		this(conf, Inet4Address.getLocalHost().getHostAddress(), port, balancer);
+	}
+
+	private void initDatabase(DBInfo dbInfo) throws ClassNotFoundException, SQLException, DatabaseNotSupported {
+		// opening connection
+		Connection conn = DBFactory.getConnection(dbInfo);
+		// SERVICE table
+		dbUtils.createServiceTable(conn);
+		// SERVICE_PROVIDER table
+		dbUtils.createServiceProviderTable(conn);
+		// SERVICE_PROVIDER_SUPPORT table
+		dbUtils.createServiceSupportTable(conn);
+		// closing connection
+		conn.close();
+		// print
+		System.out.println("Finished checking if schema exists....");
 	}
 
 	@Override
@@ -157,6 +184,14 @@ public class DBBasedNameServer implements NameServer {
 	@Override
 	public void setLoadBalancer(ProviderLoadBalancer balancer) {
 		this.balancer = balancer;
+	}
+
+	public void reset() throws SQLException, ClassNotFoundException, DatabaseNotSupported {
+		Connection conn = DBFactory.getConnection(dbInfo);
+		// clear tables
+		dbUtils.cleanAllTables(conn);
+		
+		conn.close();
 	}
 
 }
