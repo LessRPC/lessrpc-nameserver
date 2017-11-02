@@ -37,7 +37,7 @@ public class NameServer implements Constants {
 		// default port
 		int port = conf.getInteger(CONF_TAG_NAME_VIPE_API_PORT);
 		this.ns = new DBBasedNameServer(conf, port, new RandomLoadBalancer());
-		stub = new ServerStub(new ArrayList<Serializer>(), port);
+		stub = new ServerStub(port,new ArrayList<Serializer>());
 		stub.init(new NameServerServiceProvider(ns));
 		stub.start();
 
