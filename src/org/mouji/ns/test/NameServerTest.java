@@ -281,9 +281,6 @@ public class NameServerTest implements NameServerServices {
 		Assert.assertEquals(true, flag & flag2 & flag3 & flag4);
 
 		ServiceSupportInfo[] providers = client.getAllProviders();
-		for (ServiceSupportInfo ssi : providers) {
-			System.out.println(ssi);
-		}
 
 		Assert.assertEquals(4, providers.length);
 
@@ -335,9 +332,6 @@ public class NameServerTest implements NameServerServices {
 		Assert.assertEquals(true, flag & flag2 & flag3 & flag4 & flag5);
 
 		ServiceSupportInfo[] providers = client.getAllProviders();
-		for (ServiceSupportInfo ssi : providers) {
-			System.out.println(ssi);
-		}
 
 		Assert.assertEquals(3, providers.length);
 
@@ -384,9 +378,6 @@ public class NameServerTest implements NameServerServices {
 		Assert.assertEquals(true, flag & flag2 & flag3 & flag4 & flag5);
 
 		ServiceSupportInfo[] providers = client.getAllProviders();
-		for (ServiceSupportInfo ssi : providers) {
-			System.out.println(ssi);
-		}
 
 		Assert.assertEquals(2, providers.length);
 
