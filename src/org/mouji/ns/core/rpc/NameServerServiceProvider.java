@@ -1,6 +1,8 @@
 package org.mouji.ns.core.rpc;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.mouji.common.errors.ApplicationSpecificErrorException;
 import org.mouji.common.errors.DatabaseNotSupported;
@@ -206,6 +208,30 @@ public class NameServerServiceProvider implements ServiceProvider {
 
 	public NameServer getNameServer() {
 		return nameServer;
+	}
+
+	@Override
+	public List<ServiceSupportInfo> listSupport() {
+		List<ServiceSupportInfo> list = new ArrayList<ServiceSupportInfo>();
+		list.add(new ServiceSupportInfo(NameServerServices.CHECK_PROVIDER_STATUS, spInfo,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		list.add(new ServiceSupportInfo(NameServerServices.GET_ALL_PROVIDERS, spInfo,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		list.add(new ServiceSupportInfo(NameServerServices.GET_PROVIDER, spInfo,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		list.add(new ServiceSupportInfo(NameServerServices.GET_PROVIDERS, spInfo,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		list.add(new ServiceSupportInfo(NameServerServices.GET_SERVICE_INFO_BY_ID, spInfo,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		list.add(new ServiceSupportInfo(NameServerServices.GET_SERVICE_INFO_BY_NAME, spInfo,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		list.add(new ServiceSupportInfo(NameServerServices.REGISTER, spInfo,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		list.add(new ServiceSupportInfo(NameServerServices.UNREGISTER, spInfo,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		list.add(new ServiceSupportInfo(NameServerServices.UNREGISTER_ALL, spInfo,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		return list;
 	}
 
 }
