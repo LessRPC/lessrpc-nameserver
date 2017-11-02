@@ -36,7 +36,7 @@ public class TestMain {
 		
 		 ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
 		
-		 NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		 NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		
 		 ServiceSupportInfo provider = client.getProvider(service);
 		

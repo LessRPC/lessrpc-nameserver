@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mouji.common.errors.DatabaseNotSupported;
-import org.mouji.common.info.NameServerInfo;
 import org.mouji.common.info.SerializationFormat;
 import org.mouji.common.info.ServiceInfo;
 import org.mouji.common.info.ServiceProviderInfo;
@@ -30,7 +29,6 @@ public class NameServerTest implements NameServerServices {
 
 	private ServiceProviderInfo nsSPInfo;
 
-	private NameServerInfo nsInfo;
 
 	private final ServiceProviderInfo sampleProvider = new ServiceProviderInfo("test", 5, StubEnvInfo.currentEnvInfo());
 
@@ -43,7 +41,6 @@ public class NameServerTest implements NameServerServices {
 
 		nsSPInfo = new ServiceProviderInfo(Inet4Address.getLocalHost().getHostAddress(), 6161,
 				StubEnvInfo.currentEnvInfo());
-		nsInfo = new NameServerInfo(nsSPInfo.getURL(), nsSPInfo.getPort());
 	}
 
 	@Test
@@ -73,7 +70,7 @@ public class NameServerTest implements NameServerServices {
 	@Test
 	public void testRegister() throws Exception {
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		boolean flag = client.register(new ServiceSupportInfo(service, sampleProvider,
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 
@@ -83,7 +80,7 @@ public class NameServerTest implements NameServerServices {
 	@Test
 	public void testGetServiceInfoById() throws Exception {
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		boolean flag = client.register(new ServiceSupportInfo(service, sampleProvider,
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 
@@ -98,7 +95,7 @@ public class NameServerTest implements NameServerServices {
 	@Test
 	public void testGetServiceInfoByName() throws Exception {
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		boolean flag = client.register(new ServiceSupportInfo(service, sampleProvider,
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 
@@ -114,7 +111,7 @@ public class NameServerTest implements NameServerServices {
 	public void testGetProvider() throws Exception {
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
 
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		boolean flag = client.register(new ServiceSupportInfo(service, sampleProvider,
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 		Assert.assertEquals(true, flag);
@@ -136,7 +133,7 @@ public class NameServerTest implements NameServerServices {
 	public void testGetProviderEmpty() throws Exception {
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
 
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 
 		ServiceSupportInfo provider = client.getProvider(service);
 
@@ -147,7 +144,7 @@ public class NameServerTest implements NameServerServices {
 	public void testCheckProviderStatus() throws Exception {
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
 
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		boolean flag = client.register(new ServiceSupportInfo(service, sampleProvider,
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 		Assert.assertEquals(true, flag);
@@ -176,7 +173,7 @@ public class NameServerTest implements NameServerServices {
 	public void testGetProvidersEmpty() throws Exception {
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
 
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 
 		ServiceSupportInfo[] providers = client.getProviders(service);
 
@@ -186,9 +183,8 @@ public class NameServerTest implements NameServerServices {
 	
 	@Test
 	public void testGetAllProvidersEmpty() throws Exception {
-		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
 
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 
 		ServiceSupportInfo[] providers = client.getAllProviders();
 
@@ -199,7 +195,7 @@ public class NameServerTest implements NameServerServices {
 	@Test
 	public void testGetServiceInfoEmpty() throws Exception {
 
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		ServiceInfo<?> service = client.getServiceInfoById(1);
 
 		Assert.assertNull(service);
@@ -222,7 +218,7 @@ public class NameServerTest implements NameServerServices {
 		ServiceInfo<Integer> service2 = new ServiceInfo<Integer>("tes2", 2);
 		ServiceProviderInfo provider4 = new ServiceProviderInfo("tes1", ports[3], StubEnvInfo.currentEnvInfo());
 
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		boolean flag = client.register(new ServiceSupportInfo(service, provider1,
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 		boolean flag2 = client.register(new ServiceSupportInfo(service, provider2,
@@ -268,7 +264,7 @@ public class NameServerTest implements NameServerServices {
 		ServiceInfo<Integer> service2 = new ServiceInfo<Integer>("tes2", 2);
 		ServiceProviderInfo provider4 = new ServiceProviderInfo("tes1", ports[3], StubEnvInfo.currentEnvInfo());
 
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		boolean flag = client.register(new ServiceSupportInfo(service, provider1,
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 		boolean flag2 = client.register(new ServiceSupportInfo(service, provider2,
@@ -317,7 +313,7 @@ public class NameServerTest implements NameServerServices {
 		ServiceInfo<Integer> service2 = new ServiceInfo<Integer>("tes2", 2);
 		ServiceProviderInfo provider4 = new ServiceProviderInfo("tes1", ports[3], StubEnvInfo.currentEnvInfo());
 
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		boolean flag = client.register(new ServiceSupportInfo(service, provider1,
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 		boolean flag2 = client.register(new ServiceSupportInfo(service, provider2,
@@ -363,7 +359,7 @@ public class NameServerTest implements NameServerServices {
 
 		ServiceInfo<Integer> service2 = new ServiceInfo<Integer>("tes2", 2);
 
-		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		boolean flag = client.register(new ServiceSupportInfo(service, provider1,
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 		boolean flag2 = client.register(new ServiceSupportInfo(service, provider2,
