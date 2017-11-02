@@ -7,8 +7,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.plaf.synth.SynthSpinnerUI;
-
 import org.mouji.common.db.DBUtils;
 import org.mouji.common.info.SerializationFormat;
 import org.mouji.common.info.ServiceInfo;
@@ -40,8 +38,9 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 			sup.setProvider(provider);
 			sup.setService(service);
 
-			String sql2 = "SELECT "+DB_SQL_TABLE_COLUMN_NAME_FORMAT_NAME+", "+DB_SQL_TABLE_COLUMN_NAME_FORMAT_VERSION+" from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " as sp, "
-					+ DB_SQL_TABLE_NAME_SERVICE_PROVIDER_SUPPORT + " as sps  WHERE sp."
+			String sql2 = "SELECT " + DB_SQL_TABLE_COLUMN_NAME_FORMAT_NAME + ", "
+					+ DB_SQL_TABLE_COLUMN_NAME_FORMAT_VERSION + " from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER
+					+ " as sp, " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER_SUPPORT + " as sps  WHERE sp."
 					+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + " = sps."
 					+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + " and " + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID
 					+ " = " + service.getId() + " and sp." + DB_SQL_TABLE_COLUMN_NAME_URL + " = '" + provider.getURL()
@@ -50,7 +49,7 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 			ResultSet rs2 = conn.createStatement().executeQuery(sql2);
 			List<SerializationFormat> tmp = new ArrayList<SerializationFormat>();
 			while (rs2.next()) {
-				tmp.add(new SerializationFormat(rs2.getString(1),rs2.getString(2)));
+				tmp.add(new SerializationFormat(rs2.getString(1), rs2.getString(2)));
 			}
 
 			sup.setSerializers(tmp.toArray(new SerializationFormat[0]));
@@ -66,9 +65,9 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 		ArrayList<ServiceProviderInfo> list = new ArrayList<ServiceProviderInfo>();
 		ArrayList<ServiceInfo<?>> services = new ArrayList<ServiceInfo<?>>();
 
-		String sql = "SELECT sp.URL, sp.PORT, s.NAME as SERVICE_NAME, s.SERVICE_ID from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " as sp, "
-				+ DB_SQL_TABLE_NAME_SERVICE + " as s  WHERE s." + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID
-				+ " = sp." + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID + ";";
+		String sql = "SELECT sp.URL, sp.PORT, s.NAME as SERVICE_NAME, s.SERVICE_ID from "
+				+ DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " as sp, " + DB_SQL_TABLE_NAME_SERVICE + " as s  WHERE s."
+				+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID + " = sp." + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID + ";";
 		ResultSet rs = conn.createStatement().executeQuery(sql);
 		while (rs.next()) {
 			list.add(new ServiceProviderInfo(rs.getString(DB_SQL_TABLE_COLUMN_NAME_URL),
@@ -85,17 +84,18 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 			sup.setProvider(provider);
 			sup.setService(services.get(i));
 
-			String sql2 = "SELECT "+DB_SQL_TABLE_COLUMN_NAME_FORMAT_NAME+", "+DB_SQL_TABLE_COLUMN_NAME_FORMAT_VERSION+" from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " as sp, "
-					+ DB_SQL_TABLE_NAME_SERVICE_PROVIDER_SUPPORT + " as sps  WHERE sp."
+			String sql2 = "SELECT " + DB_SQL_TABLE_COLUMN_NAME_FORMAT_NAME + ", "
+					+ DB_SQL_TABLE_COLUMN_NAME_FORMAT_VERSION + " from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER
+					+ " as sp, " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER_SUPPORT + " as sps  WHERE sp."
 					+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + " = sps."
 					+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + " and " + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID
-					+ " = " + services.get(i).getId() + " and sp." + DB_SQL_TABLE_COLUMN_NAME_URL + " = '" + provider.getURL()
-					+ "' and sp." + DB_SQL_TABLE_COLUMN_NAME_PORT + "=" + provider.getPort() + " ;";
+					+ " = " + services.get(i).getId() + " and sp." + DB_SQL_TABLE_COLUMN_NAME_URL + " = '"
+					+ provider.getURL() + "' and sp." + DB_SQL_TABLE_COLUMN_NAME_PORT + "=" + provider.getPort() + " ;";
 
 			ResultSet rs2 = conn.createStatement().executeQuery(sql2);
 			List<SerializationFormat> tmp = new ArrayList<SerializationFormat>();
 			while (rs2.next()) {
-				tmp.add(new SerializationFormat(rs2.getString(1),rs2.getString(2)));
+				tmp.add(new SerializationFormat(rs2.getString(1), rs2.getString(2)));
 			}
 
 			sup.setSerializers(tmp.toArray(new SerializationFormat[0]));
@@ -184,9 +184,28 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 	public boolean unregister(Connection conn, ServiceInfo<?> service, ServiceProviderInfo provider) {
 
 		try {
-			String sql = "DELETE FROM  " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " WHERE "
-					+ DB_SQL_TABLE_COLUMN_NAME_URL + " = '" + provider.getURL() + "' and "
-					+ DB_SQL_TABLE_COLUMN_NAME_PORT + "=" + provider.getPort() + " and SERVICE_ID="+service.getId()+" ;";
+			String sql = "DELETE FROM  " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " WHERE " + DB_SQL_TABLE_COLUMN_NAME_URL
+					+ " = '" + provider.getURL() + "' and " + DB_SQL_TABLE_COLUMN_NAME_PORT + "=" + provider.getPort()
+					+ " and SERVICE_ID=" + service.getId() + " ;";
+
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean unregisterAll(Connection conn, ServiceProviderInfo provider) {
+
+		try {
+			String sql = "DELETE FROM  " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " WHERE " + DB_SQL_TABLE_COLUMN_NAME_URL
+					+ " = '" + provider.getURL() + "' and " + DB_SQL_TABLE_COLUMN_NAME_PORT + "=" + provider.getPort()
+					+ " ;";
 
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate(sql);

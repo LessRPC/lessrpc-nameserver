@@ -56,6 +56,10 @@ public class NameServerServiceProvider implements ServiceProvider {
 			return handleRegister(request);
 		} else if (request.getService().equals(NameServerServices.UNREGISTER)) {
 			return handleUnregister(request);
+		} else if (request.getService().equals(NameServerServices.UNREGISTER_ALL)) {
+			return handleUnregisterAll(request);
+		} else if (request.getService().equals(NameServerServices.CHECK_PROVIDER_STATUS)) {
+			return handleCheckProviderStatus(request);
 		}
 		throw new ServiceNotSupportedException(request.getService());
 	}
@@ -102,10 +106,27 @@ public class NameServerServiceProvider implements ServiceProvider {
 
 	private ServiceResponse<?> handleUnregister(ServiceRequest request)
 			throws ClassNotFoundException, SQLException, DatabaseNotSupported, InvalidArgsException {
-		System.out.println(request);
 		checkArgs(2, request, new Class[] { ServiceInfo.class, ServiceProviderInfo.class });
 		boolean flag = nameServer.unregister((ServiceInfo<?>) request.getArgs()[0].getContent(),
 				(ServiceProviderInfo) request.getArgs()[1].getContent());
+
+		return new ServiceResponse<>(request.getService(), new SerializedObject<>(new Boolean(flag)),
+				request.getRequestId());
+	}
+
+	private ServiceResponse<?> handleCheckProviderStatus(ServiceRequest request)
+			throws ClassNotFoundException, SQLException, DatabaseNotSupported, InvalidArgsException {
+		checkArgs(1, request, new Class[] { ServiceProviderInfo.class });
+		boolean flag = nameServer.checkProviderStatus((ServiceProviderInfo) request.getArgs()[0].getContent());
+
+		return new ServiceResponse<>(request.getService(), new SerializedObject<>(new Boolean(flag)),
+				request.getRequestId());
+	}
+
+	private ServiceResponse<?> handleUnregisterAll(ServiceRequest request)
+			throws ClassNotFoundException, SQLException, DatabaseNotSupported, InvalidArgsException {
+		checkArgs(1, request, new Class[] { ServiceProviderInfo.class });
+		boolean flag = nameServer.unregisterAll((ServiceProviderInfo) request.getArgs()[0].getContent());
 
 		return new ServiceResponse<>(request.getService(), new SerializedObject<>(new Boolean(flag)),
 				request.getRequestId());
@@ -125,8 +146,8 @@ public class NameServerServiceProvider implements ServiceProvider {
 		checkArgs(1, request, new Class[] { String.class });
 		ServiceInfo<?> info = nameServer.getServiceInfoByName((String) request.getArgs()[0].getContent());
 
-		return new ServiceResponse<ServiceInfo<?>>(request.getService(), new SerializedObject<>(info),
-				request.getRequestId());
+		return new ServiceResponse<ServiceInfo<?>>(request.getService(),
+				getSerializedObject(info, ServiceInfo.class.getName()), request.getRequestId());
 	}
 
 	private ServiceResponse<?> handleGetServiceInfoById(ServiceRequest request)
@@ -134,8 +155,8 @@ public class NameServerServiceProvider implements ServiceProvider {
 		checkArgs(1, request, new Class[] { Integer.class });
 		ServiceInfo<?> info = nameServer.getServiceInfoById((Integer) request.getArgs()[0].getContent());
 
-		return new ServiceResponse<ServiceInfo<?>>(request.getService(), new SerializedObject<>(info),
-				request.getRequestId());
+		return new ServiceResponse<ServiceInfo<?>>(request.getService(),
+				getSerializedObject(info, ServiceInfo.class.getName()), request.getRequestId());
 	}
 
 	private ServiceResponse<?> handleGetAllProvidersService(ServiceRequest request)
@@ -143,8 +164,8 @@ public class NameServerServiceProvider implements ServiceProvider {
 		checkArgs(0, request, new Class[] {});
 		ServiceSupportInfo[] info = nameServer.getAllProviders();
 
-		return new ServiceResponse<ServiceSupportInfo[]>(request.getService(), new SerializedObject<>(info),
-				request.getRequestId());
+		return new ServiceResponse<ServiceSupportInfo[]>(request.getService(),
+				getSerializedObject(info, ServiceSupportInfo[].class.getName()), request.getRequestId());
 	}
 
 	private ServiceResponse<?> handleGetProvidersService(ServiceRequest request)
@@ -152,8 +173,8 @@ public class NameServerServiceProvider implements ServiceProvider {
 		checkArgs(1, request, new Class[] { ServiceInfo.class });
 		ServiceSupportInfo[] info = nameServer.getProviders((ServiceInfo<?>) request.getArgs()[0].getContent());
 
-		return new ServiceResponse<ServiceSupportInfo[]>(request.getService(), new SerializedObject<>(info),
-				request.getRequestId());
+		return new ServiceResponse<ServiceSupportInfo[]>(request.getService(),
+				getSerializedObject(info, ServiceSupportInfo[].class.getName()), request.getRequestId());
 	}
 
 	private ServiceResponse<?> handleGetProviderService(ServiceRequest request)
@@ -161,9 +182,16 @@ public class NameServerServiceProvider implements ServiceProvider {
 		checkArgs(1, request, new Class[] { ServiceInfo.class });
 		ServiceSupportInfo info = nameServer.getProvider((ServiceInfo<?>) request.getArgs()[0].getContent());
 
-		return new ServiceResponse<ServiceSupportInfo>(request.getService(), new SerializedObject<>(info),
-				request.getRequestId());
+		return new ServiceResponse<ServiceSupportInfo>(request.getService(),
+				getSerializedObject(info, ServiceSupportInfo.class.getName()), request.getRequestId());
 
+	}
+
+	private <T extends Object> SerializedObject<T> getSerializedObject(T content, String clsPath) {
+		if (content == null) {
+			return new SerializedObject<>();
+		}
+		return new SerializedObject<>(content);
 	}
 
 	@Override

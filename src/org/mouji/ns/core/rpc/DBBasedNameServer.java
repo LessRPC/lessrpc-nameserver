@@ -4,6 +4,7 @@ import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import org.mouji.common.db.DBInfo;
 import org.mouji.common.db.DBUtils;
@@ -12,8 +13,11 @@ import org.mouji.common.info.ServiceInfo;
 import org.mouji.common.info.ServiceProviderInfo;
 import org.mouji.common.info.ServiceSupportInfo;
 import org.mouji.common.loadbalance.ProviderLoadBalancer;
+import org.mouji.common.serializer.Serializer;
 import org.mouji.common.services.NameServer;
 import org.mouji.ns.core.db.DBFactory;
+import org.mouji.stub.java.JsonSerializer;
+import org.mouji.stub.java.stubs.ClientStub;
 
 import me.salimm.allconfig.core.Config;
 import me.salimm.allconfig.core.errors.PrefixNotANestedConfigException;
@@ -92,6 +96,9 @@ public class DBBasedNameServer implements NameServer {
 		ServiceSupportInfo[] supports = dbUtils.getProviders(conn, service);
 		conn.close();
 
+		if (supports.length == 0) {
+			return null;
+		}
 		return getLoadBalancer().select(service, supports);
 	}
 
@@ -190,8 +197,30 @@ public class DBBasedNameServer implements NameServer {
 		Connection conn = DBFactory.getConnection(dbInfo);
 		// clear tables
 		dbUtils.cleanAllTables(conn);
-		
 		conn.close();
+	}
+
+	@Override
+	public boolean checkProviderStatus(ServiceProviderInfo provider) {
+		ClientStub client = new ClientStub(Arrays.asList(new Serializer[] { new JsonSerializer() }));
+		try {
+			boolean flag = client.ping(provider);
+			if (!flag) {
+				unregisterAll(provider);
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean unregisterAll(ServiceProviderInfo provider)
+			throws ClassNotFoundException, SQLException, DatabaseNotSupported {
+		Connection conn = DBFactory.getConnection(dbInfo);
+		boolean flag = dbUtils.unregisterAll(DBFactory.getConnection(dbInfo), provider);
+		conn.close();
+		return flag;
 	}
 
 }

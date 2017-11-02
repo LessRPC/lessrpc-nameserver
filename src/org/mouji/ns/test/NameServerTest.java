@@ -79,7 +79,7 @@ public class NameServerTest implements NameServerServices {
 
 		Assert.assertEquals(true, flag);
 	}
-	
+
 	@Test
 	public void testGetServiceInfoById() throws Exception {
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
@@ -88,13 +88,13 @@ public class NameServerTest implements NameServerServices {
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 
 		Assert.assertEquals(true, flag);
-		
+
 		ServiceInfo<?> response = client.getServiceInfoById(1);
-		
-		Assert.assertEquals(service, response);	
-		
+
+		Assert.assertEquals(service, response);
+
 	}
-	
+
 	@Test
 	public void testGetServiceInfoByName() throws Exception {
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
@@ -103,11 +103,11 @@ public class NameServerTest implements NameServerServices {
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 
 		Assert.assertEquals(true, flag);
-		
+
 		ServiceInfo<?> response = client.getServiceInfoByName("test");
-		
-		Assert.assertEquals(service, response);	
-		
+
+		Assert.assertEquals(service, response);
+
 	}
 
 	@Test
@@ -133,6 +133,83 @@ public class NameServerTest implements NameServerServices {
 	}
 
 	@Test
+	public void testGetProviderEmpty() throws Exception {
+		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
+
+		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+
+		ServiceSupportInfo provider = client.getProvider(service);
+
+		Assert.assertNull(provider);
+	}
+
+	@Test
+	public void testCheckProviderStatus() throws Exception {
+		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
+
+		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		boolean flag = client.register(new ServiceSupportInfo(service, sampleProvider,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		Assert.assertEquals(true, flag);
+
+		ServiceSupportInfo provider = client.getProvider(service);
+
+		Assert.assertEquals(service, provider.getService());
+
+		Assert.assertEquals(sampleProvider, provider.getProvider());
+
+		Assert.assertEquals(1, provider.getSerializers().length);
+		Assert.assertEquals(SerializationFormat.defaultFotmat().getName(), provider.getSerializers()[0].getName());
+		Assert.assertEquals(SerializationFormat.defaultFotmat().getVersion(),
+				provider.getSerializers()[0].getVersion());
+
+		flag = client.checkProviderStatus(sampleProvider);
+		Assert.assertEquals(true, flag);
+
+		provider = client.getProvider(service);
+
+		Assert.assertNull(provider);
+
+	}
+
+	@Test
+	public void testGetProvidersEmpty() throws Exception {
+		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
+
+		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+
+		ServiceSupportInfo[] providers = client.getProviders(service);
+
+		Assert.assertEquals(0,providers.length);
+
+	}
+	
+	@Test
+	public void testGetAllProvidersEmpty() throws Exception {
+		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
+
+		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+
+		ServiceSupportInfo[] providers = client.getAllProviders();
+
+		Assert.assertEquals(0,providers.length);
+
+	}
+	
+	@Test
+	public void testGetServiceInfoEmpty() throws Exception {
+
+		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		ServiceInfo<?> service = client.getServiceInfoById(1);
+
+		Assert.assertNull(service);
+		
+		service = client.getServiceInfoByName("test");
+		Assert.assertNull(service);
+
+	}
+
+	@Test
 	public void testGetProviders() throws Exception {
 		int[] ports = new int[] { 1, 2, 3, 4 };
 
@@ -140,7 +217,8 @@ public class NameServerTest implements NameServerServices {
 		ServiceProviderInfo provider1 = new ServiceProviderInfo("tes1", ports[0], StubEnvInfo.currentEnvInfo());
 		ServiceProviderInfo provider2 = new ServiceProviderInfo("test2", ports[1], StubEnvInfo.currentEnvInfo());
 		ServiceProviderInfo provider3 = new ServiceProviderInfo("test3", ports[2], StubEnvInfo.currentEnvInfo());
-
+		
+		
 		ServiceInfo<Integer> service2 = new ServiceInfo<Integer>("tes2", 2);
 		ServiceProviderInfo provider4 = new ServiceProviderInfo("tes1", ports[3], StubEnvInfo.currentEnvInfo());
 
@@ -278,6 +356,51 @@ public class NameServerTest implements NameServerServices {
 		Assert.assertEquals(provider1, providers[0].getProvider());
 		Assert.assertEquals(provider2, providers[1].getProvider());
 		Assert.assertEquals(provider3, providers[2].getProvider());
+	}
+
+	@Test
+	public void testUnregisterAll() throws Exception {
+		int[] ports = new int[] { 1, 2, 3, 4 };
+
+		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
+		ServiceProviderInfo provider1 = new ServiceProviderInfo("tes1", ports[0], StubEnvInfo.currentEnvInfo());
+		ServiceProviderInfo provider2 = new ServiceProviderInfo("test2", ports[1], StubEnvInfo.currentEnvInfo());
+		ServiceProviderInfo provider3 = new ServiceProviderInfo("test3", ports[2], StubEnvInfo.currentEnvInfo());
+
+		ServiceInfo<Integer> service2 = new ServiceInfo<Integer>("tes2", 2);
+
+		NSClient client = new NSClient(nsInfo, new ArrayList<>());
+		boolean flag = client.register(new ServiceSupportInfo(service, provider1,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		boolean flag2 = client.register(new ServiceSupportInfo(service, provider2,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		boolean flag3 = client.register(new ServiceSupportInfo(service, provider3,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+		boolean flag4 = client.register(new ServiceSupportInfo(service2, provider1,
+				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
+
+		boolean flag5 = client.unregisterAll(provider1);
+
+		Assert.assertEquals(true, flag & flag2 & flag3 & flag4 & flag5);
+
+		ServiceSupportInfo[] providers = client.getAllProviders();
+		for (ServiceSupportInfo ssi : providers) {
+			System.out.println(ssi);
+		}
+
+		Assert.assertEquals(2, providers.length);
+
+		Assert.assertEquals(service, providers[0].getService());
+		Assert.assertEquals(service, providers[1].getService());
+
+		Assert.assertEquals(1, providers[0].getSerializers().length);
+		Assert.assertEquals(1, providers[1].getSerializers().length);
+
+		Assert.assertEquals(SerializationFormat.defaultFotmat(), providers[0].getSerializers()[0]);
+		Assert.assertEquals(SerializationFormat.defaultFotmat(), providers[1].getSerializers()[0]);
+
+		Assert.assertEquals(provider2, providers[0].getProvider());
+		Assert.assertEquals(provider3, providers[1].getProvider());
 	}
 
 	@After
