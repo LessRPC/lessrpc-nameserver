@@ -14,7 +14,7 @@ import org.mouji.common.info.SerializationFormat;
 import org.mouji.common.info.ServiceInfo;
 import org.mouji.common.info.ServiceProviderInfo;
 import org.mouji.common.info.ServiceSupportInfo;
-import org.mouji.common.info.StubEnvInfo;
+import org.mouji.common.info.EnvironmentInfo;
 import org.mouji.common.services.NameServerServices;
 import org.mouji.ns.core.server.NameServer;
 import org.mouji.stub.java.stubs.ClientStub;
@@ -30,7 +30,7 @@ public class NameServerTest implements NameServerServices {
 	private ServiceProviderInfo nsSPInfo;
 
 
-	private final ServiceProviderInfo sampleProvider = new ServiceProviderInfo("test", 5, StubEnvInfo.currentEnvInfo());
+	private final ServiceProviderInfo sampleProvider = new ServiceProviderInfo("test", 5, EnvironmentInfo.currentEnvInfo());
 
 	@Before
 	public void runNS() throws ClassNotFoundException, FileNotFoundException, SQLException, DatabaseNotSupported,
@@ -40,7 +40,7 @@ public class NameServerTest implements NameServerServices {
 		ns.reset();
 
 		nsSPInfo = new ServiceProviderInfo(Inet4Address.getLocalHost().getHostAddress(), 6161,
-				StubEnvInfo.currentEnvInfo());
+				EnvironmentInfo.currentEnvInfo());
 	}
 
 	@Test
@@ -210,13 +210,13 @@ public class NameServerTest implements NameServerServices {
 		int[] ports = new int[] { 1, 2, 3, 4 };
 
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
-		ServiceProviderInfo provider1 = new ServiceProviderInfo("tes1", ports[0], StubEnvInfo.currentEnvInfo());
-		ServiceProviderInfo provider2 = new ServiceProviderInfo("test2", ports[1], StubEnvInfo.currentEnvInfo());
-		ServiceProviderInfo provider3 = new ServiceProviderInfo("test3", ports[2], StubEnvInfo.currentEnvInfo());
+		ServiceProviderInfo provider1 = new ServiceProviderInfo("tes1", ports[0], EnvironmentInfo.currentEnvInfo());
+		ServiceProviderInfo provider2 = new ServiceProviderInfo("test2", ports[1], EnvironmentInfo.currentEnvInfo());
+		ServiceProviderInfo provider3 = new ServiceProviderInfo("test3", ports[2], EnvironmentInfo.currentEnvInfo());
 		
 		
 		ServiceInfo<Integer> service2 = new ServiceInfo<Integer>("tes2", 2);
-		ServiceProviderInfo provider4 = new ServiceProviderInfo("tes1", ports[3], StubEnvInfo.currentEnvInfo());
+		ServiceProviderInfo provider4 = new ServiceProviderInfo("tes1", ports[3], EnvironmentInfo.currentEnvInfo());
 
 		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		boolean flag = client.register(new ServiceSupportInfo(service, provider1,
@@ -257,12 +257,12 @@ public class NameServerTest implements NameServerServices {
 		int[] ports = new int[] { 1, 2, 3, 4 };
 
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
-		ServiceProviderInfo provider1 = new ServiceProviderInfo("tes1", ports[0], StubEnvInfo.currentEnvInfo());
-		ServiceProviderInfo provider2 = new ServiceProviderInfo("test2", ports[1], StubEnvInfo.currentEnvInfo());
-		ServiceProviderInfo provider3 = new ServiceProviderInfo("test3", ports[2], StubEnvInfo.currentEnvInfo());
+		ServiceProviderInfo provider1 = new ServiceProviderInfo("tes1", ports[0], EnvironmentInfo.currentEnvInfo());
+		ServiceProviderInfo provider2 = new ServiceProviderInfo("test2", ports[1], EnvironmentInfo.currentEnvInfo());
+		ServiceProviderInfo provider3 = new ServiceProviderInfo("test3", ports[2], EnvironmentInfo.currentEnvInfo());
 
 		ServiceInfo<Integer> service2 = new ServiceInfo<Integer>("tes2", 2);
-		ServiceProviderInfo provider4 = new ServiceProviderInfo("tes1", ports[3], StubEnvInfo.currentEnvInfo());
+		ServiceProviderInfo provider4 = new ServiceProviderInfo("tes1", ports[3], EnvironmentInfo.currentEnvInfo());
 
 		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		boolean flag = client.register(new ServiceSupportInfo(service, provider1,
@@ -306,12 +306,12 @@ public class NameServerTest implements NameServerServices {
 		int[] ports = new int[] { 1, 2, 3, 4 };
 
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
-		ServiceProviderInfo provider1 = new ServiceProviderInfo("tes1", ports[0], StubEnvInfo.currentEnvInfo());
-		ServiceProviderInfo provider2 = new ServiceProviderInfo("test2", ports[1], StubEnvInfo.currentEnvInfo());
-		ServiceProviderInfo provider3 = new ServiceProviderInfo("test3", ports[2], StubEnvInfo.currentEnvInfo());
+		ServiceProviderInfo provider1 = new ServiceProviderInfo("tes1", ports[0], EnvironmentInfo.currentEnvInfo());
+		ServiceProviderInfo provider2 = new ServiceProviderInfo("test2", ports[1], EnvironmentInfo.currentEnvInfo());
+		ServiceProviderInfo provider3 = new ServiceProviderInfo("test3", ports[2], EnvironmentInfo.currentEnvInfo());
 
 		ServiceInfo<Integer> service2 = new ServiceInfo<Integer>("tes2", 2);
-		ServiceProviderInfo provider4 = new ServiceProviderInfo("tes1", ports[3], StubEnvInfo.currentEnvInfo());
+		ServiceProviderInfo provider4 = new ServiceProviderInfo("tes1", ports[3], EnvironmentInfo.currentEnvInfo());
 
 		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 		boolean flag = client.register(new ServiceSupportInfo(service, provider1,
@@ -353,9 +353,9 @@ public class NameServerTest implements NameServerServices {
 		int[] ports = new int[] { 1, 2, 3, 4 };
 
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
-		ServiceProviderInfo provider1 = new ServiceProviderInfo("tes1", ports[0], StubEnvInfo.currentEnvInfo());
-		ServiceProviderInfo provider2 = new ServiceProviderInfo("test2", ports[1], StubEnvInfo.currentEnvInfo());
-		ServiceProviderInfo provider3 = new ServiceProviderInfo("test3", ports[2], StubEnvInfo.currentEnvInfo());
+		ServiceProviderInfo provider1 = new ServiceProviderInfo("tes1", ports[0], EnvironmentInfo.currentEnvInfo());
+		ServiceProviderInfo provider2 = new ServiceProviderInfo("test2", ports[1], EnvironmentInfo.currentEnvInfo());
+		ServiceProviderInfo provider3 = new ServiceProviderInfo("test3", ports[2], EnvironmentInfo.currentEnvInfo());
 
 		ServiceInfo<Integer> service2 = new ServiceInfo<Integer>("tes2", 2);
 

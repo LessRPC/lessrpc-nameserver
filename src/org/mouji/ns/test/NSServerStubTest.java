@@ -20,7 +20,7 @@ import org.mouji.common.info.ServiceInfo;
 import org.mouji.common.info.ServiceProviderInfo;
 import org.mouji.common.info.ServiceRequest;
 import org.mouji.common.info.ServiceSupportInfo;
-import org.mouji.common.info.StubEnvInfo;
+import org.mouji.common.info.EnvironmentInfo;
 import org.mouji.common.info.responses.ServiceResponse;
 import org.mouji.common.serializer.Serializer;
 import org.mouji.common.services.ServiceProvider;
@@ -50,10 +50,10 @@ public class NSServerStubTest {
 		ns.reset();
 
 		nsSPInfo = new ServiceProviderInfo(Inet4Address.getLocalHost().getHostAddress(), 6161,
-				StubEnvInfo.currentEnvInfo());
+				EnvironmentInfo.currentEnvInfo());
 		
 		spInfo = new ServiceProviderInfo(Inet4Address.getLocalHost().getHostAddress(), 4343,
-				StubEnvInfo.currentEnvInfo());
+				EnvironmentInfo.currentEnvInfo());
 		
 		
 	}

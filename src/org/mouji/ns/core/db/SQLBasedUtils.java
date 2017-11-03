@@ -12,7 +12,7 @@ import org.mouji.common.info.SerializationFormat;
 import org.mouji.common.info.ServiceInfo;
 import org.mouji.common.info.ServiceProviderInfo;
 import org.mouji.common.info.ServiceSupportInfo;
-import org.mouji.common.info.StubEnvInfo;
+import org.mouji.common.info.EnvironmentInfo;
 import org.mouji.ns.core.constants.Constants;
 
 public abstract class SQLBasedUtils implements DBUtils, Constants {
@@ -26,7 +26,7 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 		ResultSet rs = conn.createStatement().executeQuery(sql);
 		while (rs.next()) {
 			list.add(new ServiceProviderInfo(rs.getString(DB_SQL_TABLE_COLUMN_NAME_URL),
-					rs.getInt(DB_SQL_TABLE_COLUMN_NAME_PORT), StubEnvInfo.currentEnvInfo()));
+					rs.getInt(DB_SQL_TABLE_COLUMN_NAME_PORT), EnvironmentInfo.currentEnvInfo()));
 		}
 		rs.getStatement().close();
 
@@ -71,7 +71,7 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 		ResultSet rs = conn.createStatement().executeQuery(sql);
 		while (rs.next()) {
 			list.add(new ServiceProviderInfo(rs.getString(DB_SQL_TABLE_COLUMN_NAME_URL),
-					rs.getInt(DB_SQL_TABLE_COLUMN_NAME_PORT), StubEnvInfo.currentEnvInfo()));
+					rs.getInt(DB_SQL_TABLE_COLUMN_NAME_PORT), EnvironmentInfo.currentEnvInfo()));
 			services.add(new ServiceInfo<>(rs.getString("SERVICE_NAME"), rs.getInt("SERVICE_ID")));
 		}
 		rs.getStatement().close();

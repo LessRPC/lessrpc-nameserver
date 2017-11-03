@@ -15,7 +15,7 @@ import org.mouji.common.info.ServiceInfo;
 import org.mouji.common.info.ServiceProviderInfo;
 import org.mouji.common.info.ServiceRequest;
 import org.mouji.common.info.ServiceSupportInfo;
-import org.mouji.common.info.StubEnvInfo;
+import org.mouji.common.info.EnvironmentInfo;
 import org.mouji.common.info.responses.ServiceResponse;
 import org.mouji.common.services.NameServer;
 import org.mouji.common.services.NameServerServices;
@@ -32,7 +32,7 @@ public class NameServerServiceProvider implements ServiceProvider {
 
 	public NameServerServiceProvider(NameServer nameServer) {
 		this.nameServer = nameServer;
-		this.spInfo = new ServiceProviderInfo(nameServer.getURL(), nameServer.getPort(), StubEnvInfo.currentEnvInfo());
+		this.spInfo = new ServiceProviderInfo(nameServer.getURL(), nameServer.getPort(), EnvironmentInfo.currentEnvInfo());
 	}
 
 	@Override

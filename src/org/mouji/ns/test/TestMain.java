@@ -14,7 +14,7 @@ import org.mouji.common.info.SerializationFormat;
 import org.mouji.common.info.ServiceInfo;
 import org.mouji.common.info.ServiceProviderInfo;
 import org.mouji.common.info.ServiceSupportInfo;
-import org.mouji.common.info.StubEnvInfo;
+import org.mouji.common.info.EnvironmentInfo;
 import org.mouji.stub.java.stubs.NSClient;
 
 
@@ -24,14 +24,14 @@ public class TestMain {
 			SerializationFormatNotSupported, RPCException, RPCProviderFailureException, IOException, Exception {
 		 NameServerInfo nsInfo;
 		 ServiceProviderInfo sampleProvider = new ServiceProviderInfo("test",
-		 5, StubEnvInfo.currentEnvInfo());
+		 5, EnvironmentInfo.currentEnvInfo());
 		
 		
 		
 		 ServiceProviderInfo nsSPInfo = new
 		 ServiceProviderInfo(Inet4Address.getLocalHost().getHostAddress(),
 		 6161,
-		 StubEnvInfo.currentEnvInfo());
+		 EnvironmentInfo.currentEnvInfo());
 		 nsInfo = new NameServerInfo(nsSPInfo.getURL(), nsSPInfo.getPort());
 		
 		 ServiceInfo<Integer> service = new ServiceInfo<Integer>("test", 1);
