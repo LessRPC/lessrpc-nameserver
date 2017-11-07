@@ -25,10 +25,9 @@ import org.mouji.common.info.responses.ServiceResponse;
 import org.mouji.common.serializer.Serializer;
 import org.mouji.common.services.ServiceProvider;
 import org.mouji.ns.core.server.NameServer;
-import org.mouji.stub.java.JsonSerializer;
+import org.mouji.stub.java.serializer.JsonSerializer;
 import org.mouji.stub.java.stubs.NSClient;
 import org.mouji.stub.java.stubs.NSServerStub;
-import org.mouji.stub.java.stubs.ServerStub;
 
 import me.salimm.allconfig.core.errors.PrefixNotANestedConfigException;
 import me.salimm.allconfig.core.types.XMLConfig;

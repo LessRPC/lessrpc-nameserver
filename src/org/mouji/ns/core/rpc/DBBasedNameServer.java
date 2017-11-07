@@ -16,7 +16,7 @@ import org.mouji.common.loadbalance.ProviderLoadBalancer;
 import org.mouji.common.serializer.Serializer;
 import org.mouji.common.services.NameServer;
 import org.mouji.ns.core.db.DBFactory;
-import org.mouji.stub.java.JsonSerializer;
+import org.mouji.stub.java.serializer.JsonSerializer;
 import org.mouji.stub.java.stubs.ClientStub;
 
 import me.salimm.allconfig.core.Config;
