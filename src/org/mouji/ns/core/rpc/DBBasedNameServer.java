@@ -47,26 +47,26 @@ public class DBBasedNameServer implements NameServer {
 	 */
 	private ProviderLoadBalancer balancer;
 
-	public DBBasedNameServer(Config conf, DBUtils dbUtils, String url, int port, ProviderLoadBalancer balancer)
+	public DBBasedNameServer(DBInfo dbInfo, DBUtils dbUtils, String url, int port, ProviderLoadBalancer balancer)
 			throws PrefixNotANestedConfigException, ClassNotFoundException, SQLException, DatabaseNotSupported {
 		this.dbUtils = dbUtils;
 		this.url = url;
 		this.port = port;
 		this.setLoadBalancer(balancer);
-		this.dbInfo = DBFactory.getDBInfo(conf);
+		this.dbInfo = dbInfo;
 		initDatabase(dbInfo);
 	}
 
-	public DBBasedNameServer(Config conf, DBUtils dbUtils, int port, ProviderLoadBalancer balancer)
+	public DBBasedNameServer(DBInfo dbInfo, DBUtils dbUtils, int port, ProviderLoadBalancer balancer)
 			throws UnknownHostException, PrefixNotANestedConfigException, ClassNotFoundException, SQLException,
 			DatabaseNotSupported {
-		this(conf, dbUtils, Inet4Address.getLocalHost().getHostAddress(), port, balancer);
+		this(dbInfo, dbUtils, Inet4Address.getLocalHost().getHostAddress(), port, balancer);
 	}
 
 	public DBBasedNameServer(Config conf, String url, int port, ProviderLoadBalancer balancer)
 			throws UnknownHostException, PrefixNotANestedConfigException, ClassNotFoundException, SQLException,
 			DatabaseNotSupported {
-		this(conf, DBFactory.getDBUtils(conf), Inet4Address.getLocalHost().getHostAddress(), port, balancer);
+		this(DBFactory.getDBInfo(conf), DBFactory.getDBUtils(conf), Inet4Address.getLocalHost().getHostAddress(), port, balancer);
 	}
 
 	public DBBasedNameServer(Config conf, int port, ProviderLoadBalancer balancer) throws UnknownHostException,
