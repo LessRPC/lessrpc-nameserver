@@ -1,14 +1,14 @@
-package org.mouji.ns.core.db;
+package org.lessrpc.ns.core.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.mouji.common.db.DBInfo;
-import org.mouji.common.db.DBUtils;
-import org.mouji.common.errors.DatabaseNotSupported;
-import org.mouji.common.types.DBType;
-import org.mouji.ns.core.constants.Constants;
+import org.lessrpc.common.db.DBInfo;
+import org.lessrpc.common.db.DBUtils;
+import org.lessrpc.common.errors.DatabaseNotSupported;
+import org.lessrpc.common.types.DBType;
+import org.lessrpc.ns.core.constants.Constants;
 
 import me.salimm.allconfig.core.Config;
 import me.salimm.allconfig.core.errors.PrefixNotANestedConfigException;

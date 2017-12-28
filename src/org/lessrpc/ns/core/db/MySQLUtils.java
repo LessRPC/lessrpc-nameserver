@@ -1,4 +1,4 @@
-package org.mouji.ns.core.db;
+package org.lessrpc.ns.core.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;

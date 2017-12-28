@@ -1,4 +1,4 @@
-package org.mouji.ns.core.rpc;
+package org.lessrpc.ns.core.rpc;
 
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
@@ -6,20 +6,20 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 
-import org.mouji.common.db.DBInfo;
-import org.mouji.common.db.DBUtils;
-import org.mouji.common.errors.ApplicationSpecificErrorException;
-import org.mouji.common.errors.DatabaseNotSupported;
-import org.mouji.common.errors.ServiceProviderAlreadyExistsException;
-import org.mouji.common.info.ServiceInfo;
-import org.mouji.common.info.ServiceProviderInfo;
-import org.mouji.common.info.ServiceSupportInfo;
-import org.mouji.common.loadbalance.ProviderLoadBalancer;
-import org.mouji.common.serializer.Serializer;
-import org.mouji.common.services.NameServer;
-import org.mouji.ns.core.db.DBFactory;
-import org.mouji.stub.java.serializer.JsonSerializer;
-import org.mouji.stub.java.stubs.ClientStub;
+import org.lessrpc.common.db.DBInfo;
+import org.lessrpc.common.db.DBUtils;
+import org.lessrpc.common.errors.ApplicationSpecificErrorException;
+import org.lessrpc.common.errors.DatabaseNotSupported;
+import org.lessrpc.common.errors.ServiceProviderAlreadyExistsException;
+import org.lessrpc.common.info.ServiceInfo;
+import org.lessrpc.common.info.ServiceProviderInfo;
+import org.lessrpc.common.info.ServiceSupportInfo;
+import org.lessrpc.common.loadbalance.ProviderLoadBalancer;
+import org.lessrpc.common.serializer.Serializer;
+import org.lessrpc.common.services.NameServer;
+import org.lessrpc.ns.core.db.DBFactory;
+import org.lessrpc.stub.java.serializer.JsonSerializer;
+import org.lessrpc.stub.java.stubs.ClientStub;
 
 import me.salimm.allconfig.core.Config;
 import me.salimm.allconfig.core.errors.PrefixNotANestedConfigException;

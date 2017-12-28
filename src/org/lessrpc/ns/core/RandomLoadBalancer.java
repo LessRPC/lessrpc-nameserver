@@ -1,10 +1,10 @@
-package org.mouji.ns.core;
+package org.lessrpc.ns.core;
 
 import java.util.Random;
 
-import org.mouji.common.info.ServiceInfo;
-import org.mouji.common.info.ServiceSupportInfo;
-import org.mouji.common.loadbalance.ProviderLoadBalancer;
+import org.lessrpc.common.info.ServiceInfo;
+import org.lessrpc.common.info.ServiceSupportInfo;
+import org.lessrpc.common.loadbalance.ProviderLoadBalancer;
 
 public class RandomLoadBalancer implements ProviderLoadBalancer {
 

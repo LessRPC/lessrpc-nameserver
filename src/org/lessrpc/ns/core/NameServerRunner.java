@@ -1,9 +1,9 @@
-package org.mouji.ns.core;
+package org.lessrpc.ns.core;
 
 import java.sql.SQLException;
 
-import org.mouji.common.errors.DatabaseNotSupported;
-import org.mouji.ns.core.server.NameServer;
+import org.lessrpc.common.errors.DatabaseNotSupported;
+import org.lessrpc.ns.core.server.NameServer;
 
 import me.salimm.allconfig.core.Config;
 import me.salimm.allconfig.core.types.XMLConfig;

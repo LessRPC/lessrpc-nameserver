@@ -1,18 +1,18 @@
-package org.mouji.ns.core.server;
+package org.lessrpc.ns.core.server;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.mouji.common.db.DBInfo;
-import org.mouji.common.db.DBUtils;
-import org.mouji.common.errors.DatabaseNotSupported;
-import org.mouji.common.serializer.Serializer;
-import org.mouji.ns.core.RandomLoadBalancer;
-import org.mouji.ns.core.constants.Constants;
-import org.mouji.ns.core.db.DBFactory;
-import org.mouji.ns.core.rpc.DBBasedNameServer;
-import org.mouji.ns.core.rpc.NameServerServiceProvider;
-import org.mouji.stub.java.stubs.ServerStub;
+import org.lessrpc.common.db.DBInfo;
+import org.lessrpc.common.db.DBUtils;
+import org.lessrpc.common.errors.DatabaseNotSupported;
+import org.lessrpc.common.serializer.Serializer;
+import org.lessrpc.ns.core.RandomLoadBalancer;
+import org.lessrpc.ns.core.constants.Constants;
+import org.lessrpc.ns.core.db.DBFactory;
+import org.lessrpc.ns.core.rpc.DBBasedNameServer;
+import org.lessrpc.ns.core.rpc.NameServerServiceProvider;
+import org.lessrpc.stub.java.stubs.ServerStub;
 
 import me.salimm.allconfig.core.Config;
 import me.salimm.allconfig.core.errors.PrefixNotANestedConfigException;
@@ -27,7 +27,7 @@ import me.salimm.allconfig.core.errors.PrefixNotANestedConfigException;
 public class NameServer implements Constants {
 
 	private ServerStub stub;
-	private org.mouji.common.services.NameServer ns;
+	private org.lessrpc.common.services.NameServer ns;
 	private int port;
 	private DBInfo dbInfo;
 	private DBUtils dbUtils;

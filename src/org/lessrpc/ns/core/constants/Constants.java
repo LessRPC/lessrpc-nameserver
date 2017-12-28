@@ -1,4 +1,4 @@
-package org.mouji.ns.core.constants;
+package org.lessrpc.ns.core.constants;
 
 public interface Constants {
 
