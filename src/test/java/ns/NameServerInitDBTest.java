@@ -1,4 +1,4 @@
-package org.mouji.ns.test;
+package test.java.ns;
 
 import org.junit.Test;
 

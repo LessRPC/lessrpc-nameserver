@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mouji.common.db.DBUtils;
+import org.mouji.common.errors.ServiceProviderAlreadyExistsException;
 import org.mouji.common.info.SerializationFormat;
 import org.mouji.common.info.ServiceInfo;
 import org.mouji.common.info.ServiceProviderInfo;
@@ -21,12 +22,15 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 	public ServiceSupportInfo[] getProviders(Connection conn, ServiceInfo<?> service) throws SQLException {
 		ArrayList<ServiceProviderInfo> list = new ArrayList<ServiceProviderInfo>();
 
-		String sql = "SELECT URL, PORT from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + "  WHERE "
-				+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID + " = " + service.getId() + ";";
+		String sql = "SELECT URL, PORT, ENV_OS, ENV_LANG, ENV_COMPILER from " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER
+				+ "  WHERE " + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID + " = " + service.getId() + ";";
 		ResultSet rs = conn.createStatement().executeQuery(sql);
 		while (rs.next()) {
 			list.add(new ServiceProviderInfo(rs.getString(DB_SQL_TABLE_COLUMN_NAME_URL),
-					rs.getInt(DB_SQL_TABLE_COLUMN_NAME_PORT), EnvironmentInfo.currentEnvInfo()));
+					rs.getInt(DB_SQL_TABLE_COLUMN_NAME_PORT),
+					new EnvironmentInfo(rs.getString(DB_SQL_TABLE_COLUMN_NAME_ENV_LANG),
+							rs.getString(DB_SQL_TABLE_COLUMN_NAME_ENV_OS),
+							rs.getString(DB_SQL_TABLE_COLUMN_NAME_ENV_COMPILER))));
 		}
 		rs.getStatement().close();
 
@@ -133,7 +137,7 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 	}
 
 	@Override
-	public boolean register(Connection conn, ServiceSupportInfo support) {
+	public boolean register(Connection conn, ServiceSupportInfo support) throws ServiceProviderAlreadyExistsException {
 		ServiceInfo<?> service = support.getService();
 		ServiceProviderInfo provider = support.getProvider();
 
@@ -142,8 +146,11 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 				+ service.getId() + ",'" + service.getName() + "' );";
 
 		String sql = "INSERT INTO " + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + " (" + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID
-				+ ", " + DB_SQL_TABLE_COLUMN_NAME_URL + ", " + DB_SQL_TABLE_COLUMN_NAME_PORT + ") VALUES ("
-				+ service.getId() + ",'" + provider.getURL() + "'," + provider.getPort() + ");";
+				+ ", " + DB_SQL_TABLE_COLUMN_NAME_URL + ", " + DB_SQL_TABLE_COLUMN_NAME_PORT + ", "
+				+ DB_SQL_TABLE_COLUMN_NAME_ENV_OS + ", " + DB_SQL_TABLE_COLUMN_NAME_ENV_LANG + ", "
+				+ DB_SQL_TABLE_COLUMN_NAME_ENV_COMPILER + ") VALUES (" + service.getId() + ",'" + provider.getURL()
+				+ "'," + provider.getPort() + ",'" + provider.getEnv().getOS() + "'" + ",'"
+				+ provider.getEnv().getLang() + "'" + ",'" + provider.getEnv().getCompiler() + "'" + ");";
 
 		try {
 			Statement stmt = conn.createStatement();
@@ -174,8 +181,8 @@ public abstract class SQLBasedUtils implements DBUtils, Constants {
 			}
 			stmt.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			// e.printStackTrace();
+			throw new ServiceProviderAlreadyExistsException(provider);
 		}
 		return true;
 	}

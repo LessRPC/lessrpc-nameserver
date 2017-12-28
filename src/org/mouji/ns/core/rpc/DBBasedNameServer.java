@@ -8,7 +8,9 @@ import java.util.Arrays;
 
 import org.mouji.common.db.DBInfo;
 import org.mouji.common.db.DBUtils;
+import org.mouji.common.errors.ApplicationSpecificErrorException;
 import org.mouji.common.errors.DatabaseNotSupported;
+import org.mouji.common.errors.ServiceProviderAlreadyExistsException;
 import org.mouji.common.info.ServiceInfo;
 import org.mouji.common.info.ServiceProviderInfo;
 import org.mouji.common.info.ServiceSupportInfo;
@@ -66,7 +68,8 @@ public class DBBasedNameServer implements NameServer {
 	public DBBasedNameServer(Config conf, String url, int port, ProviderLoadBalancer balancer)
 			throws UnknownHostException, PrefixNotANestedConfigException, ClassNotFoundException, SQLException,
 			DatabaseNotSupported {
-		this(DBFactory.getDBInfo(conf), DBFactory.getDBUtils(conf), Inet4Address.getLocalHost().getHostAddress(), port, balancer);
+		this(DBFactory.getDBInfo(conf), DBFactory.getDBUtils(conf), Inet4Address.getLocalHost().getHostAddress(), port,
+				balancer);
 	}
 
 	public DBBasedNameServer(Config conf, int port, ProviderLoadBalancer balancer) throws UnknownHostException,
@@ -123,10 +126,17 @@ public class DBBasedNameServer implements NameServer {
 
 	@Override
 	public boolean register(ServiceSupportInfo support)
-			throws ClassNotFoundException, SQLException, DatabaseNotSupported {
+			throws ClassNotFoundException, SQLException, DatabaseNotSupported, ApplicationSpecificErrorException {
 		Connection conn = DBFactory.getConnection(dbInfo);
-		boolean flag = dbUtils.register(DBFactory.getConnection(dbInfo), support);
+		boolean flag = false;
+		try {
+			flag = dbUtils.register(DBFactory.getConnection(dbInfo), support);
+		} catch (ServiceProviderAlreadyExistsException e) {
+			throw new ApplicationSpecificErrorException(ERROR_SERVICE_PROVIDER_EXISTS_CODE,
+					ERROR_SERVICE_PROVIDER_EXISTS_MSG);
+		}
 		conn.close();
+
 		return flag;
 	}
 

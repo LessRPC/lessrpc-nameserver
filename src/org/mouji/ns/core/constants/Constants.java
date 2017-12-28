@@ -30,5 +30,8 @@ public interface Constants {
 	public static final String DB_SQL_TABLE_COLUMN_NAME_NAME = "NAME";
 	public static final String DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID = "SERVICE_ID";
 	public static final String DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID = "SERVICE_PROVIDER_ID";
+	public static final String DB_SQL_TABLE_COLUMN_NAME_ENV_LANG = "ENV_LANG";
+	public static final String DB_SQL_TABLE_COLUMN_NAME_ENV_OS = "ENV_OS";
+	public static final String DB_SQL_TABLE_COLUMN_NAME_ENV_COMPILER = "ENV_COMPILER";
 
 }

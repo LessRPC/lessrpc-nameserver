@@ -107,7 +107,7 @@ public class NameServerServiceProvider implements ServiceProvider {
 	}
 
 	private ServiceResponse<?> handleUnregister(ServiceRequest request)
-			throws ClassNotFoundException, SQLException, DatabaseNotSupported, InvalidArgsException {
+			throws ClassNotFoundException, SQLException, DatabaseNotSupported, InvalidArgsException, ApplicationSpecificErrorException {
 		checkArgs(2, request, new Class[] { ServiceInfo.class, ServiceProviderInfo.class });
 		boolean flag = nameServer.unregister((ServiceInfo<?>) request.getArgs()[0].getContent(),
 				(ServiceProviderInfo) request.getArgs()[1].getContent());
@@ -117,7 +117,7 @@ public class NameServerServiceProvider implements ServiceProvider {
 	}
 
 	private ServiceResponse<?> handleCheckProviderStatus(ServiceRequest request)
-			throws ClassNotFoundException, SQLException, DatabaseNotSupported, InvalidArgsException {
+			throws ClassNotFoundException, SQLException, DatabaseNotSupported, InvalidArgsException, ApplicationSpecificErrorException {
 		checkArgs(1, request, new Class[] { ServiceProviderInfo.class });
 		boolean flag = nameServer.checkProviderStatus((ServiceProviderInfo) request.getArgs()[0].getContent());
 
@@ -126,7 +126,7 @@ public class NameServerServiceProvider implements ServiceProvider {
 	}
 
 	private ServiceResponse<?> handleUnregisterAll(ServiceRequest request)
-			throws ClassNotFoundException, SQLException, DatabaseNotSupported, InvalidArgsException {
+			throws ClassNotFoundException, SQLException, DatabaseNotSupported, InvalidArgsException, ApplicationSpecificErrorException {
 		checkArgs(1, request, new Class[] { ServiceProviderInfo.class });
 		boolean flag = nameServer.unregisterAll((ServiceProviderInfo) request.getArgs()[0].getContent());
 
@@ -135,7 +135,7 @@ public class NameServerServiceProvider implements ServiceProvider {
 	}
 
 	private ServiceResponse<?> handleRegister(ServiceRequest request)
-			throws InvalidArgsException, ClassNotFoundException, SQLException, DatabaseNotSupported {
+			throws InvalidArgsException, ClassNotFoundException, SQLException, DatabaseNotSupported, ApplicationSpecificErrorException {
 		checkArgs(1, request, new Class[] { ServiceSupportInfo.class });
 		boolean flag = nameServer.register((ServiceSupportInfo) request.getArgs()[0].getContent());
 
@@ -144,7 +144,7 @@ public class NameServerServiceProvider implements ServiceProvider {
 	}
 
 	private ServiceResponse<?> handleGetServiceInfoByName(ServiceRequest request)
-			throws InvalidArgsException, ClassNotFoundException, SQLException, DatabaseNotSupported {
+			throws InvalidArgsException, ClassNotFoundException, SQLException, DatabaseNotSupported, ApplicationSpecificErrorException {
 		checkArgs(1, request, new Class[] { String.class });
 		ServiceInfo<?> info = nameServer.getServiceInfoByName((String) request.getArgs()[0].getContent());
 
@@ -153,7 +153,7 @@ public class NameServerServiceProvider implements ServiceProvider {
 	}
 
 	private ServiceResponse<?> handleGetServiceInfoById(ServiceRequest request)
-			throws InvalidArgsException, ClassNotFoundException, SQLException, DatabaseNotSupported {
+			throws InvalidArgsException, ClassNotFoundException, SQLException, DatabaseNotSupported, ApplicationSpecificErrorException {
 		checkArgs(1, request, new Class[] { Integer.class });
 		ServiceInfo<?> info = nameServer.getServiceInfoById((Integer) request.getArgs()[0].getContent());
 
@@ -162,7 +162,7 @@ public class NameServerServiceProvider implements ServiceProvider {
 	}
 
 	private ServiceResponse<?> handleGetAllProvidersService(ServiceRequest request)
-			throws InvalidArgsException, ClassNotFoundException, SQLException, DatabaseNotSupported {
+			throws InvalidArgsException, ClassNotFoundException, SQLException, DatabaseNotSupported, ApplicationSpecificErrorException {
 		checkArgs(0, request, new Class[] {});
 		ServiceSupportInfo[] info = nameServer.getAllProviders();
 
@@ -171,7 +171,7 @@ public class NameServerServiceProvider implements ServiceProvider {
 	}
 
 	private ServiceResponse<?> handleGetProvidersService(ServiceRequest request)
-			throws InvalidArgsException, ClassNotFoundException, SQLException, DatabaseNotSupported {
+			throws InvalidArgsException, ClassNotFoundException, SQLException, DatabaseNotSupported, ApplicationSpecificErrorException {
 		checkArgs(1, request, new Class[] { ServiceInfo.class });
 		ServiceSupportInfo[] info = nameServer.getProviders((ServiceInfo<?>) request.getArgs()[0].getContent());
 
@@ -180,7 +180,7 @@ public class NameServerServiceProvider implements ServiceProvider {
 	}
 
 	private ServiceResponse<?> handleGetProviderService(ServiceRequest request)
-			throws InvalidArgsException, ClassNotFoundException, SQLException, DatabaseNotSupported {
+			throws InvalidArgsException, ClassNotFoundException, SQLException, DatabaseNotSupported, ApplicationSpecificErrorException {
 		checkArgs(1, request, new Class[] { ServiceInfo.class });
 		ServiceSupportInfo info = nameServer.getProvider((ServiceInfo<?>) request.getArgs()[0].getContent());
 

@@ -1,4 +1,4 @@
-package org.mouji.ns.test;
+package test.java.ns;
 
 import java.io.FileNotFoundException;
 import java.net.Inet4Address;
@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class NSServerStubTest {
 		
 		spInfo = new ServiceProviderInfo(Inet4Address.getLocalHost().getHostAddress(), 4343,
 				EnvironmentInfo.currentEnvInfo());
-		
+		System.out.println("-----------1");
 		
 	}
 	
@@ -89,7 +90,13 @@ public class NSServerStubTest {
 		providers = client.getAllProviders();
 
 		Assert.assertEquals(0, providers.length);
+		
 
+	}
+	
+	@After
+	public void postTest() throws Exception{
+		ns.stop();
 	}
 }
 

@@ -30,8 +30,10 @@ public class MySQLUtils extends SQLBasedUtils {
 		String sql = "CREATE TABLE IF NOT EXISTS `" + DB_SQL_TABLE_NAME_SERVICE_PROVIDER + "` (`"
 				+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID + "` int(11) unsigned NOT NULL AUTO_INCREMENT, `"
 				+ DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID + "` int(11) DEFAULT NULL, `" + DB_SQL_TABLE_COLUMN_NAME_URL
-				+ "` varchar(200) DEFAULT NULL, `" + DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID
-				+ "` int(11) DEFAULT NULL, PRIMARY KEY (`" + DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID
+				+ "` varchar(200) DEFAULT NULL, `" + DB_SQL_TABLE_COLUMN_NAME_PORT + "` int(11) DEFAULT NULL, `"
+				+ DB_SQL_TABLE_COLUMN_NAME_ENV_OS + "` varchar(200) DEFAULT NULL, `" + DB_SQL_TABLE_COLUMN_NAME_ENV_LANG
+				+ "` varchar(200) DEFAULT NULL, `" + DB_SQL_TABLE_COLUMN_NAME_ENV_COMPILER
+				+ "` varchar(200) DEFAULT NULL , PRIMARY KEY (`" + DB_SQL_TABLE_COLUMN_NAME_SERVICE_PROVIDER_ID
 				+ "`), KEY `SERVICE_IDX` (`" + DB_SQL_TABLE_COLUMN_NAME_SERVICE_ID
 				+ "`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 		try {
@@ -64,7 +66,7 @@ public class MySQLUtils extends SQLBasedUtils {
 
 		return true;
 	}
-	
+
 	@Override
 	public boolean cleanAllTables(Connection conn) {
 
