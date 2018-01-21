@@ -6,14 +6,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lessrpc.common.errors.ApplicationSpecificErrorException;
 import org.lessrpc.common.errors.DatabaseNotSupported;
-import org.lessrpc.common.errors.RPCException;
 import org.lessrpc.common.info.EnvironmentInfo;
 import org.lessrpc.common.info.SerializationFormat;
 import org.lessrpc.common.info.ServiceInfo;
@@ -68,10 +65,10 @@ public class NameServerTest implements NameServerServices {
 	@Test
 	public void testSupportedService() throws Exception {
 		ClientStub client = new ClientStub(new ArrayList<>());
-		ServiceSupportInfo info = client.getServiceSupport(nsSPInfo, NameServerServices.REGISTER);
+		ServiceSupportInfo info = client.getServiceSupport(nsSPInfo, NameServerServices.REGISTER.getInfo());
 		Assert.assertNotNull(info);
 
-		Assert.assertEquals(NameServerServices.REGISTER, info.getService());
+		Assert.assertEquals(NameServerServices.REGISTER.getInfo(), info.getService());
 		Assert.assertEquals(nsSPInfo, info.getProvider());
 		Assert.assertEquals(1, info.getSerializers().length);
 	}

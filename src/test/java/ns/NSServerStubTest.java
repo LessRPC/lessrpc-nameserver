@@ -17,7 +17,7 @@ import org.lessrpc.common.errors.InvalidArgsException;
 import org.lessrpc.common.errors.ServiceNotSupportedException;
 import org.lessrpc.common.info.EnvironmentInfo;
 import org.lessrpc.common.info.SerializationFormat;
-import org.lessrpc.common.info.SerializedObject;
+import org.lessrpc.common.info.ServiceDescription;
 import org.lessrpc.common.info.ServiceInfo;
 import org.lessrpc.common.info.ServiceProviderInfo;
 import org.lessrpc.common.info.ServiceRequest;
@@ -39,9 +39,6 @@ public class NSServerStubTest {
 	private ServiceProviderInfo nsSPInfo;
 	private ServiceProviderInfo spInfo;
 
-	
-	
-
 	@Before
 	public void runNS() throws ClassNotFoundException, FileNotFoundException, SQLException, DatabaseNotSupported,
 			PrefixNotANestedConfigException, Exception {
@@ -51,69 +48,63 @@ public class NSServerStubTest {
 
 		nsSPInfo = new ServiceProviderInfo(Inet4Address.getLocalHost().getHostAddress(), 6161,
 				EnvironmentInfo.currentEnvInfo());
-		
+
 		spInfo = new ServiceProviderInfo(Inet4Address.getLocalHost().getHostAddress(), 4343,
 				EnvironmentInfo.currentEnvInfo());
 		System.out.println("-----------1");
-		
+
 	}
-	
+
 	@Test
 	public void testNSServerStubStop() throws Exception {
 
 		ServiceInfo<Integer> service = new ServiceInfo<Integer>("add", 1);
-		
+
 		List<Serializer> list = new ArrayList<Serializer>();
 		list.add(new JsonSerializer());
-		
-		
-		NSServerStub serverStub = new NSServerStub(spInfo.getPort(),nsSPInfo, list);
 
-		ServiceProvider serviceProvider = new TestServiceProvider(service,spInfo);
-		
-				ServiceProvider provider = serviceProvider;
+		NSServerStub serverStub = new NSServerStub(spInfo.getPort(), nsSPInfo, list);
+
+		ServiceProvider serviceProvider = new TestServiceProvider(service, spInfo);
+
+		ServiceProvider provider = serviceProvider;
 		serverStub.init(provider);
 
 		serverStub.start();
-		
-		
 
 		NSClient client = new NSClient(nsSPInfo, new ArrayList<>());
 
 		ServiceSupportInfo[] providers = client.getAllProviders();
 
 		Assert.assertEquals(1, providers.length);
-		
+
 		serverStub.stop();
-		
-		
+
 		providers = client.getAllProviders();
 
 		Assert.assertEquals(0, providers.length);
-		
 
 	}
-	
+
 	@After
-	public void postTest() throws Exception{
+	public void postTest() throws Exception {
 		ns.stop();
 	}
 }
 
-class TestServiceProvider implements ServiceProvider{
+class TestServiceProvider implements ServiceProvider {
 
 	private ServiceProviderInfo spInfo;
 	private ServiceInfo<?> service;
 
-	public TestServiceProvider(ServiceInfo<?> service,ServiceProviderInfo spInfo) {
+	public TestServiceProvider(ServiceInfo<?> service, ServiceProviderInfo spInfo) {
 		this.service = service;
 		this.spInfo = spInfo;
 	}
 
 	@Override
 	public ServiceSupportInfo service(ServiceInfo<?> info) throws ServiceNotSupportedException {
-		return new ServiceSupportInfo(info, spInfo,
-				new SerializationFormat[] { SerializationFormat.defaultFotmat() });
+		return new ServiceSupportInfo(info, spInfo, new SerializationFormat[] { SerializationFormat.defaultFotmat() });
 	}
 
 	@Override
@@ -130,14 +121,12 @@ class TestServiceProvider implements ServiceProvider{
 	public ServiceResponse<?> execute(ServiceRequest request) throws ApplicationSpecificErrorException,
 			ExecuteInternalError, InvalidArgsException, ServiceNotSupportedException {
 		if (request.getService().getId() == 1) {
-			if (!(request.getArgs()[0].getContent() instanceof Integer)
-					|| !(request.getArgs()[1].getContent() instanceof Integer)) {
+			if (!(request.getArgs()[0] instanceof Integer) || !(request.getArgs()[1] instanceof Integer)) {
 				throw new InvalidArgsException("Both must be integers!!");
 			}
-			Integer num1 = (Integer) request.getArgs()[0].getContent();
-			Integer num2 = (Integer) request.getArgs()[1].getContent();
-			return new ServiceResponse<>(request.getService(), new SerializedObject<>(num1 + num2),
-					request.getRequestId());
+			Integer num1 = (Integer) request.getArgs()[0];
+			Integer num2 = (Integer) request.getArgs()[1];
+			return new ServiceResponse<>(request.getService(), num1 + num2, request.getRequestId());
 		} else {
 			throw new ServiceNotSupportedException(request.getService());
 		}
@@ -150,5 +139,13 @@ class TestServiceProvider implements ServiceProvider{
 				new SerializationFormat[] { SerializationFormat.defaultFotmat() }));
 		return list;
 	}
-	
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List<ServiceDescription> listServices() {
+		List<ServiceDescription> list = new ArrayList<ServiceDescription>();
+		list.add(new ServiceDescription<>(service, new Class[] { Integer.class, Integer.class }, Integer.class));
+		return list;
+	}
+
 }
