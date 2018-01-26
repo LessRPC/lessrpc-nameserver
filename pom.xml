@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>lessrpc-nameserver</artifactId>
+	<artifactId>lessrpc_nameserver</artifactId>
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>org.lessrpc</groupId>
-		<artifactId>lessrpc-parent</artifactId>
-		<version>0.1.0</version>
+		<artifactId>lessrpc_parent</artifactId>
+		<version>0.2.0</version>
 		<relativePath>../</relativePath>
 	</parent>
 	
@@ -39,13 +39,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.lessrpc</groupId>
-			<artifactId>lessrpc-common</artifactId>
+			<artifactId>lessrpc_common</artifactId>
 			<version>0.1.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.lessrpc</groupId>
-			<artifactId>lessrpc-stub4j</artifactId>
+			<artifactId>lessrpc_stub4j</artifactId>
 			<version>0.1.0</version>
 			<scope>compile</scope>
 		</dependency>
