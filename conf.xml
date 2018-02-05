@@ -6,10 +6,6 @@
 			<value>SQLLITE</value>
 		</property>
 		<property>
-			<name>USER</name>
-			<value></value>
-		</property>		
-		<property>
 			<name>URL</name>
 			<value>jdbc:sqlite:db/test.db</value>
 		</property>
